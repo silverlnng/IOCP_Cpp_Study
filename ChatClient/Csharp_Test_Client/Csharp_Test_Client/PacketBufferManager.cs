@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -72,6 +73,46 @@ namespace Csharp_Test_Client
                 BufferRelocate();
             }
             return true;
+        }
+
+        public ArraySegment<byte> Read()
+        {
+            var enableReadSize = WritePos - ReadPos;
+
+            // 패킷의 크기를 알려면 맨 앞의 **헤더(Header)**를 읽어야 합니다
+            if (enableReadSize < HeaderSize)
+            {
+                // 처리할 데이터가 헤더크기보다 작다 => 아직 헤더조차 다 안들어왔다.
+
+                return new ArraySegment<byte>();
+                // 빈 결과를 리턴하고 함수를 종료 
+            }
+
+            // 여기서부터는 읽을사이즈가 헤더크기보다 더큰것
+
+            // BitConverter.ToInt16: 버퍼의 ReadPos 위치에 있는 2바이트(Int16)를 읽습니다. 이 숫자가 바로 **"이번 패킷의 총 길이"**입니다. (보낼 때 그렇게 약속하고 넣었으니까요)
+
+            var packetDataSize = BitConverter.ToInt16(PacketData, ReadPos);
+            
+            if(enableReadSize < packetDataSize)
+            {
+                // 지금 처리할 데이터가 패킷의 총길이 보다 작다
+                // 아직 패킷이 덜 도착할 상황
+
+                return new ArraySegment<byte>();
+                // 빈 결과를 리턴
+            }
+
+            // 이제 여기서부터는 데이터가 온전히 다 있다는 뜻
+
+            // 데이터를 복사하지 않고 범위를 지정해서 '참조'만 만듭니다. (성능 최적화)
+            var compeletePacketData = new ArraySegment<byte>(PacketData, ReadPos, packetDataSize);
+
+            // 읽은 만큼 커서(ReadPos)를 앞으로 이동시킵니다.
+            ReadPos += packetDataSize;
+
+            return compeletePacketData;
+
         }
 
 

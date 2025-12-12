@@ -55,7 +55,7 @@ public partial class MainForm : Form
 
             //(2) 핵심! 여기서 멈춥니다.
             // ClientSimpleTcp.Receive() 내부에서 socket.Receive()를 호출하는데,
-            // 이 함수는 '동기(Synchronous)' 방식이라 데이터가 없으면 코드 진행을 멈춥니다.
+            // 이 socket.Receive() 함수는 '동기(Synchronous)' 방식이라 데이터가 없으면 코드 진행을 멈춥니다.
 
             var recvData = Network.Receive();
 
@@ -68,7 +68,7 @@ public partial class MainForm : Form
                 // [중요] 버퍼에 쌓인 데이터로 '완전한 패킷'을 만들 수 있는지 반복해서 확인
                 while (true)
                 {
-
+                    var data = PacketBuffer.
 
                 }
 
