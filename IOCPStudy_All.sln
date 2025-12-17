@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IOCP_01", "IOCP_01\IOCP_01.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IOCP_02", "IOCP_02\IOCP_02\IOCP_02.vcxproj", "{0C50B249-C59F-4115-AD2C-C3826DF39D4B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IOCP_04_", "IOCP_04_\IOCP_04_.vcxproj", "{320D1687-8B2F-4C53-815E-3FDF5D989603}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{0C50B249-C59F-4115-AD2C-C3826DF39D4B}.Release|x64.Build.0 = Release|x64
 		{0C50B249-C59F-4115-AD2C-C3826DF39D4B}.Release|x86.ActiveCfg = Release|Win32
 		{0C50B249-C59F-4115-AD2C-C3826DF39D4B}.Release|x86.Build.0 = Release|Win32
+		{320D1687-8B2F-4C53-815E-3FDF5D989603}.Debug|x64.ActiveCfg = Debug|x64
+		{320D1687-8B2F-4C53-815E-3FDF5D989603}.Debug|x64.Build.0 = Debug|x64
+		{320D1687-8B2F-4C53-815E-3FDF5D989603}.Debug|x86.ActiveCfg = Debug|Win32
+		{320D1687-8B2F-4C53-815E-3FDF5D989603}.Debug|x86.Build.0 = Debug|Win32
+		{320D1687-8B2F-4C53-815E-3FDF5D989603}.Release|x64.ActiveCfg = Release|x64
+		{320D1687-8B2F-4C53-815E-3FDF5D989603}.Release|x64.Build.0 = Release|x64
+		{320D1687-8B2F-4C53-815E-3FDF5D989603}.Release|x86.ActiveCfg = Release|Win32
+		{320D1687-8B2F-4C53-815E-3FDF5D989603}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
