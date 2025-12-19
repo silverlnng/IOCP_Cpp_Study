@@ -64,11 +64,17 @@ private:
 	// IO Worker 스레드
 	std::vector<std::thread> mIOWorkerThreads;
 
-	// CompletionPort 객체핸들
+	// Accept 스레드
+	std::thread mAccepterThread;
 
+	// CompletionPort 객체핸들
+	HANDLE mIOCPHandle = INVALID_HANDLE_VALUE;
 
 	// 작업 쓰레드 동작 플래그
 	bool mIsWorkerRun = true;
+
+	// 접속 쓰레드 동작 플래그
+	bool mIsAccepterRun = true;
 
 };
 
