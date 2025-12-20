@@ -7,18 +7,29 @@
 #include <thread>
 #include <mutex>
 
+class UserManager;
+
 class PacketManager
 {
 public:
+
 	void Init(const UINT32 maxClient_);
+
+	bool Run();
+
+	void End();
 
 	void ReceivePacketData(const UINT32 clientIndex_, const UINT size_, char* pData_);
 
 	void PushSystemPacket(PacketInfo packet_);
 
 private:
+	void CreateComponent(const UINT32 maxClient);
 
 	void EnqueuePacketData(const UINT32 clientIndex_);
+
+	PacketInfo DequePacketData();
+
 
 	void ProcessPacket();
 
@@ -34,6 +45,11 @@ private:
 	// int (key) - 함수포인터(value) 의 맵을 정의
 	// 패킷 핸들러 디스패티 패턴으로 if-else ,switch-case 문을 길게 나열하는 대신 맵으로 알맞는 함수를 찾아가서 실행하는 효율적인 방식 
 	std::unordered_map<int, PROCESS_RECV_PACKET_FUNCTION> mRecvFuntionalDictionary;
+
+	UserManager* mUserManager;
+
+
+	bool mIsRunProcessThread = false;
 
 	std::thread mProcessThread;
 

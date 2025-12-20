@@ -4,6 +4,8 @@
     <ClInclude Include="PacketManager.h" />
     <ClInclude Include="ChatServer.h" />
     <ClInclude Include="Packet.h" />
+    <ClInclude Include="UserManager.h" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PacketManager.cpp" />
