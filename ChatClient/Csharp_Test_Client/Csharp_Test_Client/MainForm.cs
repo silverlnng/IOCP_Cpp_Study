@@ -27,24 +27,11 @@ public partial class MainForm : Form
         InitializeComponent();
     }
 
-    private void mainForm_Load(object sender, EventArgs e)
-    {
-        // 패킷버퍼 초기화
-
-
-        // ReadThread 
-        NetworkReadThread = new System.Threading.Thread(this.NetworkReadProcess);
-
-        // SendThread
-
-
-    }
-
 
     void NetworkReadProcess()
     {
 
-        while(IsNetworkThreadRunning)
+        while (IsNetworkThreadRunning)
         {
             if (Network.IsConnected() == false)
             {
@@ -59,7 +46,7 @@ public partial class MainForm : Form
 
             var recvData = Network.Receive();
 
-            if(recvData !=null)
+            if (recvData != null)
             {
                 // TCP는 데이터의 경계가 없기 때문에 바로 처리하지 안고 버퍼에 데이터를 넣음
                 // write(byte[] data, int pos, int size)
@@ -68,7 +55,7 @@ public partial class MainForm : Form
                 // [중요] 버퍼에 쌓인 데이터로 '완전한 패킷'을 만들 수 있는지 반복해서 확인
                 while (true)
                 {
-                    var data = PacketBuffer.
+                    //var data = PacketBuffer.
 
                 }
 
