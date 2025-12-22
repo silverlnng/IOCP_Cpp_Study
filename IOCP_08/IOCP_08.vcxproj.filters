@@ -6,6 +6,15 @@
     <ClInclude Include="Packet.h" />
     <ClInclude Include="UserManager.h" />
     <ClInclude Include="User.h" />
+    <ClInclude Include="IOCPServer.h">
+      <Filter>ServerNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientInfo.h">
+      <Filter>ServerNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>ServerNetwork</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PacketManager.cpp" />

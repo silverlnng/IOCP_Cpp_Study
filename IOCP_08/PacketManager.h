@@ -24,7 +24,7 @@ public:
 	void PushSystemPacket(PacketInfo packet_);
 
 private:
-	void CreateComponent(const UINT32 maxClient);
+	void CreateComponent(const UINT32 maxClient_);
 
 	void EnqueuePacketData(const UINT32 clientIndex_);
 

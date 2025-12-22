@@ -11,6 +11,14 @@ void PacketManager::Init(const UINT32 maxClient_)
 
 	mRecvFuntionalDictionary[(int)PACKET_ID::SYS_USER_CONNECT] = &PacketManager::ProcessUserConnect;
 
+	// 패킷매니저에서 시작하면서 유저매니저를 생성하고 Init 실행시킴
+	CreateComponent(maxClient_);
+}
+
+void PacketManager::CreateComponent(const UINT32 maxClient_)
+{
+	mUserManager = new UserManager;
+	mUserManager->Init(maxClient_);
 }
 
 bool PacketManager::Run()
@@ -23,9 +31,11 @@ bool PacketManager::Run()
 
 void PacketManager::ReceivePacketData(const UINT32 clientIndex_, const UINT size_, char* pData_)
 {
+	auto pUser = mUserManager->GetUserByConnIdx(clientIndex_);
 
+	//pUser->set
 
-	EnqueuePacketData(clientIndex_);
+	//EnqueuePacketData(clientIndex_);
 }
 
 void PacketManager::PushSystemPacket(PacketInfo packet_)
@@ -34,11 +44,7 @@ void PacketManager::PushSystemPacket(PacketInfo packet_)
 	mSystemPacketQueue.push_back(packet_);
 }
 
-void PacketManager::CreateComponent(const UINT32 maxClient)
-{
-	mUserManager = new UserManager;
 
-}
 
 void PacketManager::EnqueuePacketData(const UINT32 clientIndex_)
 {

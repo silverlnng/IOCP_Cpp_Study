@@ -8,9 +8,18 @@ class User
 
 public:
 
+	enum class DOMAIN_STATE
+	{
+		NONE =0,
+		LOGIN=1,
+		ROOM =2
+	};
+
 	void Init(const INT32 index)
 	{
+		mIndex = index;
 
+		mPacketDataBuffer = new char[PACKET_DATA_BUFFER_SIZE];
 	}
 
 	void Clear()
@@ -18,9 +27,9 @@ public:
 
 	}
 
-	PacketInfo GetPacket()
+	void SetPacketData()
 	{
-		// PacketLength 을 기반으로 완전한 형태의 패킷하나를 분리하는 역할
+
 	}
 
 private:
@@ -31,5 +40,9 @@ private:
 
 	std::string mUserID;
 
+	UINT32 mPacketDataBufferWPos = 0;
 
+	UINT32 mPacketDataBufferRPos = 0;
+
+	char* mPacketDataBuffer = nullptr;
 };

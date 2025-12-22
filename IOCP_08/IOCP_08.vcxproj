@@ -128,6 +128,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ChatServer.h" />
+    <ClInclude Include="ClientInfo.h" />
+    <ClInclude Include="Define.h" />
+    <ClInclude Include="IOCPServer.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketManager.h" />
     <ClInclude Include="User.h" />

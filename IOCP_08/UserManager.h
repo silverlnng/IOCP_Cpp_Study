@@ -20,7 +20,7 @@ public:
 			// 유저가 접속할때 마다 new User() 을 하는게 아님 !!
 			mUserObjPool[i] = new User();
 
-			//mUserObjPool[i]->Init
+			mUserObjPool[i]->Init(i);
 		}
 	}
 
