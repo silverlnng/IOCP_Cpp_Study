@@ -63,6 +63,26 @@ namespace Csharp_Test_Client
             return null;
         }
 
+        public void Send(byte[] sendData)
+        {
+            try
+            {
+                // 연결되어있으면
+                if (Sock != null && Sock.Connected)
+                {
+                    Sock.Send(sendData,0,sendData.Length,SocketFlags.None);
+                }
+                else 
+                {
+                    LatestErrorMsg = "먼저 채팅서버에 접속하세요! ";
+                }
+
+            }
+            catch (SocketException se)
+            {
+                LatestErrorMsg = se.Message;
+            }
+        }
 
         public bool IsConnected()
         {

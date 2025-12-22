@@ -1,0 +1,7 @@
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.MainForm.resources
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.csproj.GenerateResource.cache
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.GeneratedMSBuildEditorConfig.editorconfig
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.AssemblyInfoInputs.cache
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.AssemblyInfo.cs
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.csproj.CoreCompileInputs.cache
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.sourcelink.json
