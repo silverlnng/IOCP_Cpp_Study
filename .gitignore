@@ -403,3 +403,4 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
+IOCP_08/.vs/IOCP_08/v17/ipch
