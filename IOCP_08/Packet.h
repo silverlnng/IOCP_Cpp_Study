@@ -12,6 +12,8 @@ struct PacketInfo
 	UINT16 PacketId = 0;
 	UINT16 DataSize = 0;
 	char* pDataPtr = nullptr;
+
+	// 패킷의 기본생성자들은 0 으로 채움
 };
 
 enum class PACKET_ID : UINT16

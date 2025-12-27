@@ -1,4 +1,4 @@
-
+#include <utility>
 
 #include "UserManager.h"
 #include "PacketManager.h"
@@ -33,7 +33,7 @@ void PacketManager::ReceivePacketData(const UINT32 clientIndex_, const UINT size
 {
 	auto pUser = mUserManager->GetUserByConnIdx(clientIndex_);
 
-	//pUser->set
+	pUser->SetPacketData(size_, pData_);
 
 	//EnqueuePacketData(clientIndex_);
 }
@@ -71,17 +71,33 @@ PacketInfo PacketManager::DequePacketData()
 		mInComingPacketUserIndex.pop_front();
 	}
 
-	mUser
+	auto pUser = mUserManager->GetUserByConnIdx(userIndex);
 
-	return PacketInfo();
+	auto packetData = pUser->GetPacket();
+
+	return 
 }
 
 void PacketManager::ProcessPacket()
 {
 	while (mIsRunProcessThread)
 	{
+		bool  isIdle = true;
+		// 패킷의 기본생성자들은 PacketId 을 0 으로 채움
 
-		if(dequePacket)
+		if( auto packetData = DequePacketData(); packetData.PacketId > (UINT16)PACKET_ID::SYS_END )
+		{
+			isIdle = false;
+
+			//ProcessRecvPacket()
+
+		}
+		
+
+		if (isIdle)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
 
 	}
 }
