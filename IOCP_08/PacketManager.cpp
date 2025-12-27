@@ -75,7 +75,9 @@ PacketInfo PacketManager::DequePacketData()
 
 	auto packetData = pUser->GetPacket();
 
-	return 
+	packetData.ClientIndex = userIndex;
+
+	return packetData;
 }
 
 void PacketManager::ProcessPacket()
