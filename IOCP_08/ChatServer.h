@@ -1,5 +1,11 @@
 #pragma once
-class ChatServer
+
+#include "IOCPServer.h"
+#include "Packet.h"
+#include "PacketManager.h"
+
+class ChatServer : public IOCPServer 
 {
+
 };
 

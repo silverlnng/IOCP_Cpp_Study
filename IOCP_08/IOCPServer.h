@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib,"ws2_32")
 #pragma comment(lib,"mswsock.lib")
 
 #include "ClientInfo.h"
@@ -10,13 +11,28 @@ class IOCPServer
 {
 public:
 
+	IOCPServer(void){}
+
+	virtual ~IOCPServer(void)
+	{
+		// 윈속의 사용을 끝내기
+		WSACleanup();
+	}
+
 	//  소켓 초기화
 	bool Init(const UINT32 maxIOWorkerThreadCount_)
 	{
 		WSADATA wsaData;
 
 		// 
-		int nResult = WSAStartup();
+		int nResult = WSAStartup(MAKEWORD(2,2),&wsaData);
+		if (nResult != 0)
+		{
+			printf("[에러] WSAStartup() 함수 실패 : %d\n", WSAGetLastError());
+
+			return false;
+		}
+
 
 		// 연결지향형 TCP ,Overlapped IO 소켓을생성
 		mListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, NULL, WSA_FLAG_OVERLAPPED);
@@ -32,7 +48,6 @@ public:
 		printf("소켓 초기화 성공\n");
 
 		return true;
-
 	}
 
 	// 서버의 주소정버와 소켓과 연결시키고 접속 요청을 받기위해 소켓을 등록 
@@ -48,20 +63,87 @@ public:
 		stServerAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 		// 위에서 지정한 서버 주소 정보와 리슨소켓을 연결
-		int nRet = bind(mListenSocket,(SOCKADDR*)& stServerAddr, sizeof(SOCKADDR_IN));
+		int nResult = bind(mListenSocket,(SOCKADDR*)& stServerAddr, sizeof(SOCKADDR_IN));
+		if (0 != nResult)
+		{
+			printf("[에러] bind() 함수 실패 : %d \n",WSAGetLastError());
+			return false;
+		}
 
 		// 접속요청을 받기위해서 리슨소켓을 Listen State 으로 전환. 
-		 
+		// 리슨소켓의 백로그(접속대기큐) 를 5개로 설정
+		nResult = listen(mListenSocket, 5);
+		if (nResult != 0)
+		{
+			printf("[에러] listen() 함수 실패 :%d\n", WSAGetLastError());
+			return false;
+		}
 
 		// CompletionPort 객체를 생성 요청
+		mIOCPHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, MaxIOWorkerThreadCount);
+
+		if (mIOCPHandle == NULL)
+		{
+			printf("[에러] CreateIoCompletionPort() 함수 실패 :%d\n ", GetLastError());
+			return false;
+		}
+
+		auto hIOCPHandle = CreateIoCompletionPort((HANDLE)mListenSocket, mIOCPHandle, (UINT32)0, 0);
+
+		if (hIOCPHandle == NULL)
+		{
+			printf("[에러] 리슨소켓과  IOCP 바인드 실패 :%d\n ", GetLastError());
+			return false;
+		}
+
+		printf("서버등록 성공 !! \n");
+
+		return true;
+	}
+
+	// 접속 요청을 수락하고 메세지를 받아서 처리하는 함수
+	bool StartServer(const UINT32 maxClientCount_)
+	{
+		CreateClient(maxClientCount_);
+
+		// 접속된 클라이언트 주소 정보를 저장할 구조체
+
+		// 워커스레드 만들기
+
+		// Accepter 스레드 만들기
 
 	}
 
-private:
+	// 생성되어있는 쓰레드를 파괴
+	void DestroyThread()
+	{
+		
 
-	void CreateClient()
+	}
+
+	bool SendMsg(const UINT32 clientIndex_ , const UINT32 dataSize_ ,char* pData)
 	{
 
+	}
+
+	virtual void OnConnect(const UINT32 clientIndex_){}
+
+	virtual void OnClose(const UINT32 clientIndex_){}
+
+	virtual void OnReceive(const UINT32 clientIndex_,const UINT32 size_ , char* pData_ ){}
+
+
+private:
+
+	void CreateClient(const UINT32 maxClientCount_)
+	{
+		for (UINT32 i=0; i<maxClientCount_; ++i)
+		{
+			auto client = new stClientInfo;
+			client->Init(i, mIOCPHandle);
+
+			mClientInfos.push_back(client);
+		}
 	}
 
 	bool CreateWorkerThread()
