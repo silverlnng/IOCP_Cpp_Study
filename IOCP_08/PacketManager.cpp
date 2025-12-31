@@ -29,21 +29,43 @@ bool PacketManager::Run()
 	return true;
 }
 
+void PacketManager::End()
+{
+
+}
+
 void PacketManager::ReceivePacketData(const UINT32 clientIndex_, const UINT size_, char* pData_)
 {
 	auto pUser = mUserManager->GetUserByConnIdx(clientIndex_);
 
 	pUser->SetPacketData(size_, pData_);
 
-	//EnqueuePacketData(clientIndex_);
+	EnqueuePacketData(clientIndex_);
 }
 
-void PacketManager::PushSystemPacket(PacketInfo packet_)
+void PacketManager::ProcessPacket()
 {
-	std::lock_guard<std::mutex> guard(mLock);
-	mSystemPacketQueue.push_back(packet_);
-}
+	while (mIsRunProcessThread)
+	{
+		bool  isIdle = true;
+		// 패킷의 기본생성자들은 PacketId 을 0 으로 채움
 
+		if (auto packetData = DequePacketData(); packetData.PacketId > (UINT16)PACKET_ID::SYS_END)
+		{
+			isIdle = false;
+
+			//ProcessRecvPacket()
+
+		}
+
+
+		if (isIdle)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
+	}
+}
 
 
 void PacketManager::EnqueuePacketData(const UINT32 clientIndex_)
@@ -80,28 +102,16 @@ PacketInfo PacketManager::DequePacketData()
 	return packetData;
 }
 
-void PacketManager::ProcessPacket()
+
+void PacketManager::PushSystemPacket(PacketInfo packet_)
 {
-	while (mIsRunProcessThread)
-	{
-		bool  isIdle = true;
-		// 패킷의 기본생성자들은 PacketId 을 0 으로 채움
+	std::lock_guard<std::mutex> guard(mLock);
+	mSystemPacketQueue.push_back(packet_);
+}
 
-		if( auto packetData = DequePacketData(); packetData.PacketId > (UINT16)PACKET_ID::SYS_END )
-		{
-			isIdle = false;
-
-			//ProcessRecvPacket()
-
-		}
-		
-
-		if (isIdle)
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-
-	}
+PacketInfo PacketManager::DequeSystemPacketData()
+{
+	return PacketInfo();
 }
 
 void PacketManager::ProcessRecvPacket(const UINT32 clientIndex_, const UINT16 packetId_, const UINT16 packetSize_, char* pPacket_)

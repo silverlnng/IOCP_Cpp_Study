@@ -44,10 +44,31 @@ public:
 		return BindRecv();
 	}
 
-	void Close()
+	void Close(bool bIsForce = false)
 	{
+		struct linger stLinger = { 0,0 };
+		
 
+		// bIsForce 가 true 이면 강제종료시키기 (주의 : 데이터 손실일어날수있음)
+		if (bIsForce == true)
+		{
+			// {1,0} 으로 설정.
+			// 옵션을 키고 , 기다리는 시간을 0 으로
+			stLinger.l_onoff = 1;
+		}
 
+		// 소켓의 데이터 송수신을 모두 중단시킨다
+		shutdown(mSocket, SD_BOTH);
+
+		// 소켓 옵션을 설정
+		setsockopt(mSocket, SOL_SOCKET, SO_LINGER, (char*)&stLinger, sizeof(stLinger));
+
+		mIsConnect = 0;
+		mLatestClosedTimeSec = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+
+		// 소켓연결을 종료시킨다
+		closesocket(mSocket);
+		mSocket = INVALID_SOCKET;
 	}
 
 	bool PostAccept(SOCKET listenSock_,const UINT64 curTimeSec_)
@@ -63,7 +84,7 @@ public:
 
 		if (mSocket == INVALID_SOCKET)
 		{
-			printf_s("client socket WSASokcet Error", GetLastError());
+			printf_s("client socket WSASokcet Error : %d\n", GetLastError());
 			return false;
 		}
 
@@ -158,13 +179,14 @@ public:
 
 		sendOverlappedEx->m_eOperation = IOOperation::SEND;
 
+		// 
+
 		std::lock_guard<std::mutex> guard(mSendLock);
 
 		mSendDataQueue.push(sendOverlappedEx);
 
 		if (mSendDataQueue.size() == 1)
 		{
-			/
 			SendIO();
 		}
 
@@ -197,7 +219,24 @@ private:
 
 	bool SendIO()
 	{
+		auto sendOverlappedEx = mSendDataQueue.front();
 
+		DWORD dwRecvNumBytes = 0;
+
+		int nResult = WSASend(mSocket,
+			&(sendOverlappedEx->m_wsaBuf),
+			1,
+			&dwRecvNumBytes,
+			0,
+			(LPWSAOVERLAPPED)sendOverlappedEx,
+			NULL);
+
+		if (nResult == SOCKET_ERROR && (WSAGetLastError()!=ERROR_IO_PENDING))
+		{
+			printf("[에러] WSASend 함수 실패 : %d\n", WSAGetLastError());
+			return false;
+		}
+		return true;
 	}
 
 

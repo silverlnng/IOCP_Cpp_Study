@@ -6,6 +6,7 @@
 #include <deque>
 #include <thread>
 #include <mutex>
+#include <functional>
 
 class UserManager;
 
@@ -23,6 +24,10 @@ public:
 
 	void PushSystemPacket(PacketInfo packet_);
 
+	//  어떤 형태(반환형은 void이고, 인자로 (UINT32, UINT32, char*)를 받는)의 함수를 담을 수 있는 그릇
+	std::function<void(UINT32,UINT32,char*)> SendPacketFunc;
+
+
 private:
 	void CreateComponent(const UINT32 maxClient_);
 
@@ -30,6 +35,7 @@ private:
 
 	PacketInfo DequePacketData();
 
+	PacketInfo DequeSystemPacketData();
 
 	void ProcessPacket();
 

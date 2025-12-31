@@ -104,14 +104,26 @@ public:
 	// 접속 요청을 수락하고 메세지를 받아서 처리하는 함수
 	bool StartServer(const UINT32 maxClientCount_)
 	{
+		// 접속된 클라이언트 주소 정보를 저장할 구조체 최대인원수만큼 미리 만들기
 		CreateClient(maxClientCount_);
 
-		// 접속된 클라이언트 주소 정보를 저장할 구조체
-
 		// 워커스레드 만들기
+		bool bResult = CreateWorkerThread();
+		if (bResult == false)
+		{
+			return false;
+		}
 
 		// Accepter 스레드 만들기
+		bResult = CreateAccepterThread();
+		if (bResult == false)
+		{
+			return false;
+		}
 
+		printf("서버시작\n");
+
+		return true;
 	}
 
 	// 생성되어있는 쓰레드를 파괴
@@ -123,7 +135,8 @@ public:
 
 	bool SendMsg(const UINT32 clientIndex_ , const UINT32 dataSize_ ,char* pData)
 	{
-
+		auto pClient = GetClientInfo(clientIndex_);
+		return pClient->SendMsg(dataSize_, pData);
 	}
 
 	virtual void OnConnect(const UINT32 clientIndex_){}
@@ -146,18 +159,114 @@ private:
 		}
 	}
 
+	// 생성되면 Waiting Thread Queue 에 대기할 쓰레드들 생성
 	bool CreateWorkerThread()
 	{
-
+		for (UINT32 i = 0; i < MaxIOWorkerThreadCount; i++)
+		{
+			mIOWorkerThreads.emplace_back([this]() {
+				WorkerThread();});
+		}
+		printf("WorkerThread 시작 \n");
+		return true;
 	}
 
+	// 사용하지 않는 클라이언트 정보 구조체를 반환
+	stClientInfo* GetEmptyClient()
+	{
+		for (auto& client : mClientInfos)
+		{
+			if (client->IsConnected() == false)
+			{
+				return client;
+			}
+		}
+
+		return nullptr;
+	}
+
+	stClientInfo* GetClientInfo(const UINT32 clientIndex_)
+	{
+		return mClientInfos[clientIndex_];
+	}
+
+	// accept 요청을 처리하는 쓰레드 생성
 	bool CreateAccepterThread()
 	{
+		mAccepterThread = std::thread([this]() {AccepterThread(); });
 
+		printf("AccepterThread 시작! \n");
+		return true;
 	}
 
+	// Overlapped IO 작업에 대한 완료통보를 받았을때 그에해당하는 처리를 하는 함수
 	void WorkerThread()
 	{
+
+		// Completion Key 를 받을 포인터 변수
+		stClientInfo* pClientInfo = nullptr;
+
+		// 함수 호출 성공 여부
+		BOOL bSuccess = TRUE;
+	
+		// Overlapped IO 작업에서 전송된 데이터 크기
+		DWORD dwIoSize = 0;
+
+		// IO 작업을 위해 요청한 Overlapped 구조체를 받을 포인터
+		LPOVERLAPPED lpOverlapped = NULL;
+
+		while (mIsWorkerRun)
+		{
+			bSuccess = GetQueuedCompletionStatus(
+				mIOCPHandle,
+				&dwIoSize,
+				(PULONG_PTR)&pClientInfo, 
+				&lpOverlapped,
+				INFINITE);
+
+			// 워커쓰레드 종료 ******************
+			if (bSuccess==TRUE && dwIoSize==0 && lpOverlapped == NULL)
+			{
+				mIsWorkerRun = false;
+				continue;
+			}
+
+			if (lpOverlapped == NULL)
+			{
+				continue;
+			}
+
+			auto pOverlappedEx =(stOverlappedEx*)lpOverlapped;
+			
+			// 클라이언트가 접속을 끊었을때
+			if (bSuccess == FALSE && (dwIoSize==0 && pOverlappedEx->m_eOperation !=IOOperation::ACCEPT))
+			{
+
+			}
+
+			if (pOverlappedEx->m_eOperation == IOOperation::ACCEPT )
+			{
+
+
+			}
+			//Overlapped I/O Recv작업 결과 뒤 처리
+			else if (pOverlappedEx->m_eOperation == IOOperation::RECV)
+			{
+				OnReceive(pClientInfo->GetIndex(), dwIoSize, pClientInfo->RecvBuffer());
+
+				pClientInfo->BindRecv();
+			}
+			//Overlapped I/O SEND작업 결과 뒤 처리
+			else if (pOverlappedEx->m_eOperation == IOOperation::SEND)
+			{
+
+			}
+			else
+			{
+				// 예외 상황
+			}
+
+		}
 
 	}
 
@@ -203,9 +312,18 @@ private:
 		}
 	}
 
-	void CloseSocket()
+	void CloseSocket(stClientInfo* clientInfo_,bool isForce_ = false)
 	{
+		if (clientInfo_->IsConnected() == false)
+		{
+			return;
+		}
 
+		auto clientIndex = clientInfo_->GetIndex();
+
+		clientInfo_->Close(isForce_);
+
+		OnClose(clientIndex);
 	}
 
 
