@@ -10,6 +10,7 @@ public:
 	ChatServer() = default;
 	virtual ~ChatServer() = default;
 
+	// 워커스레드가 작동
 	virtual void OnConnect(const UINT32 clientIndex_) override
 	{
 		printf("[OnConnect] 클라이언트 : Index(%d)\n", clientIndex_);
@@ -18,8 +19,8 @@ public:
 		PacketInfo packet{clientIndex_,(UINT16)PACKET_ID::SYS_USER_CONNECT,0};
 
 		m_pPacketManager->PushSystemPacket(packet);
-
 	}
+
 	virtual void OnClose(const UINT32 clientIndex_) override
 	{
 		printf("[OnClose] 클라이언트 : Index(%d)\n", clientIndex_);
@@ -29,6 +30,7 @@ public:
 		m_pPacketManager->PushSystemPacket(packet);
 	}
 
+	// 워커스레드가 작동
 	virtual void OnReceive(const UINT32 clientIndex_, const UINT32 size_, char* pData_) override
 	{
 		printf("[OnReceive] 클라이언트 : Index(%d) , dataSize(%d) \n", clientIndex_, size_);

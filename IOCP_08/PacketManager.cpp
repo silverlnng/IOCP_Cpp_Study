@@ -31,7 +31,12 @@ bool PacketManager::Run()
 
 void PacketManager::End()
 {
+	mIsRunProcessThread = false;
 
+	if (mProcessThread.joinable())
+	{
+		mProcessThread.join();
+	}
 }
 
 void PacketManager::ReceivePacketData(const UINT32 clientIndex_, const UINT size_, char* pData_)
@@ -54,8 +59,14 @@ void PacketManager::ProcessPacket()
 		{
 			isIdle = false;
 
-			//ProcessRecvPacket()
+			ProcessRecvPacket(packetData.ClientIndex, packetData.PacketId, packetData.DataSize, packetData.pDataPtr);
+		}
 
+		if (auto packetData = DequeSystemPacketData(); packetData.PacketId!=0)
+		{
+			isIdle = false;
+
+			ProcessRecvPacket(packetData.ClientIndex, packetData.PacketId, packetData.DataSize, packetData.pDataPtr);
 		}
 
 
@@ -76,6 +87,8 @@ void PacketManager::EnqueuePacketData(const UINT32 clientIndex_)
 
 PacketInfo PacketManager::DequePacketData()
 {
+	// 
+
 	UINT32 userIndex = 0;
 
 	// 중괄호로 std::lock_guard 의 scope를 필요한 부분만 으로 제한 해주는 것 
@@ -99,19 +112,31 @@ PacketInfo PacketManager::DequePacketData()
 
 	packetData.ClientIndex = userIndex;
 
+
 	return packetData;
 }
 
-
+//  워커스레드가 작동
 void PacketManager::PushSystemPacket(PacketInfo packet_)
 {
 	std::lock_guard<std::mutex> guard(mLock);
 	mSystemPacketQueue.push_back(packet_);
 }
 
+// ProcessThread 에서 작동
 PacketInfo PacketManager::DequeSystemPacketData()
 {
-	return PacketInfo();
+	std::lock_guard<std::mutex> guard(mLock);
+
+	if (mSystemPacketQueue.empty())
+	{
+		return PacketInfo();
+	}
+
+	auto packetData =mSystemPacketQueue.front();
+	mSystemPacketQueue.pop_front();
+
+	return packetData;
 }
 
 void PacketManager::ProcessRecvPacket(const UINT32 clientIndex_, const UINT16 packetId_, const UINT16 packetSize_, char* pPacket_)
@@ -128,4 +153,6 @@ void PacketManager::ProcessUserConnect(UINT32 clientIndex_, UINT16 packetSize_, 
 {
 	printf("[ProcessUserConnect] clientIndex : %d\n", clientIndex_);
 	
+	auto pUser =mUserManager->GetUserByConnIdx(clientIndex_);
+	pUser->Clear();
 }

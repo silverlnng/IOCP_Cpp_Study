@@ -129,7 +129,24 @@ public:
 	// 생성되어있는 쓰레드를 파괴
 	void DestroyThread()
 	{
-		
+		mIsWorkerRun = false;
+		CloseHandle(mIOCPHandle);
+
+		for (auto& workerThread : mIOWorkerThreads)
+		{
+			if (workerThread.joinable())
+			{
+				workerThread.join();
+			}
+		}
+
+		mIsAccepterRun = false;
+		closesocket(mListenSocket);
+
+		if (mAccepterThread.joinable())
+		{
+			mAccepterThread.join();
+		}
 
 	}
 
@@ -241,7 +258,9 @@ private:
 			// 클라이언트가 접속을 끊었을때
 			if (bSuccess == FALSE || (dwIoSize==0 && pOverlappedEx->m_eOperation !=IOOperation::ACCEPT))
 			{
+				CloseSocket(pClientInfo);
 
+				continue;
 			}
 
 			//Overlapped I/O ACCEPT작업 결과 뒤 처리
@@ -273,12 +292,13 @@ private:
 			//Overlapped I/O SEND작업 결과 뒤 처리
 			else if (pOverlappedEx->m_eOperation == IOOperation::SEND)
 			{
-
+				pClientInfo->SendCompleted(dwIoSize);
 
 			}
 			else
 			{
 				// 예외 상황
+				printf("Client Index(%d) 에서 예외 상황\n", pClientInfo->GetIndex());
 			}
 
 		}
