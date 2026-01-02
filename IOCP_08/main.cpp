@@ -14,6 +14,6 @@ int main()
 	// 소켓과 서버주소를 연결하고 등록
 	server.BindAndListen(SERVER_PORT);
 
-
+	server.Run(MAX_CLIENT);
 
 }

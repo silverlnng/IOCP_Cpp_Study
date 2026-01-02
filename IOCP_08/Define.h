@@ -1,6 +1,7 @@
 #pragma once
 
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #include <mswsock.h>
 
 const UINT32 MAX_SOCK_RECVBUF = 256;

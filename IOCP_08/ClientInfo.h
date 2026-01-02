@@ -88,7 +88,8 @@ public:
 			return false;
 		}
 
-		// 비동기 접속 예약 AcceptEx : 이 함수는 이 함수는 운영체제에게 **"이 listenSock_으로 누가 접속하면, 내가 미리 만든 mSocket하고 연결해 주세요."**라고 부탁하는 함수입니다.
+		// 비동기 접속 예약 AcceptEx : 이 함수는 이 함수는 운영체제에게 "이 listenSock_으로 누가 접속하면, 내가 미리 만든 mSocket하고 연결해 주세요."라고 부탁하는 함수입니다.
+		// 
 
 		ZeroMemory(&mAcceptContext, sizeof(stOverlappedEx));
 		DWORD bytes = 0;
@@ -98,7 +99,9 @@ public:
 		mAcceptContext.m_eOperation = IOOperation::ACCEPT;
 		mAcceptContext.SessionIndex = mIndex;
 
-		// AcceptEx() : 4번째 인자가 0인 것은 **"접속만 시키고, 첫 데이터는 기다리지 말라"**는 뜻입니다.
+		
+		// AcceptEx() : 4번째 인자가 0인 것은 "접속만 시키고, 첫 데이터는 기다리지 말라"는 뜻.
+
 		if (AcceptEx(listenSock_,mSocket,mAcceptBuf,0,
 			sizeof(SOCKADDR_IN)+16, sizeof(SOCKADDR_IN) + 16,&bytes,(LPOVERLAPPED) & mAcceptContext) == false)
 		{
@@ -114,8 +117,31 @@ public:
 
 	bool AcceptCompletion()
 	{
+		// 수신 완료 처리 
+		// 접속한 클라이언트를 IOCP 시스템에 등록하고 정보를 기록하는 단계
+		printf_s("AcceptCompletion : SessionIndex(%d)\n", mIndex);
+
+		// 소켓과 IOCP 핸들을 연결 + BindRecv 까지
+		if (OnConnect(mIOCpHandle,mSocket)==false)
+		{
+			return false;
+		}
+
+		// 접속자 정보 확인과 로깅
+		SOCKADDR_IN stClientAddr;
+		int nAddrLen = sizeof(SOCKADDR_IN);
+		char clientIP[32] = { 0, };
+
+		// 클라이언트 소켓으로 클라이언트 주소정보를 가져오기.
+		getpeername(mSocket, (SOCKADDR*)&stClientAddr, &nAddrLen);
+
+		//inet_ntop은 "Internet Network to Presentation : 네트워크 숫자를 사람이 볼수있는 문자열 주소로 변환해주는 함수
+		inet_ntop(AF_INET, &(stClientAddr.sin_addr), clientIP, sizeof(clientIP));
 
 
+		printf("클라이언트 접속 : IP(%s) Socket(%d) \n", clientIP, (int)mSocket);
+
+		return true;
 	}
 
 	bool BindIOCompletionPort(HANDLE iocpHandle_)

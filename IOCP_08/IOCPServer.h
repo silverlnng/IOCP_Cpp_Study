@@ -239,26 +239,41 @@ private:
 			auto pOverlappedEx =(stOverlappedEx*)lpOverlapped;
 			
 			// 클라이언트가 접속을 끊었을때
-			if (bSuccess == FALSE && (dwIoSize==0 && pOverlappedEx->m_eOperation !=IOOperation::ACCEPT))
+			if (bSuccess == FALSE || (dwIoSize==0 && pOverlappedEx->m_eOperation !=IOOperation::ACCEPT))
 			{
 
 			}
 
+			//Overlapped I/O ACCEPT작업 결과 뒤 처리
 			if (pOverlappedEx->m_eOperation == IOOperation::ACCEPT )
 			{
+				pClientInfo = GetClientInfo(pOverlappedEx->SessionIndex);
 
+				if (pClientInfo->AcceptCompletion())
+				{
+					// 클라이언트 수 증가 
+					++mClientCnt;
 
+					OnConnect(pClientInfo->GetIndex());
+				}
+				else
+				{
+					CloseSocket(pClientInfo, true);
+				}
 			}
+
 			//Overlapped I/O Recv작업 결과 뒤 처리
 			else if (pOverlappedEx->m_eOperation == IOOperation::RECV)
 			{
 				OnReceive(pClientInfo->GetIndex(), dwIoSize, pClientInfo->RecvBuffer());
 
+				// 다시 받을수있도록 예약 걸어두기
 				pClientInfo->BindRecv();
 			}
 			//Overlapped I/O SEND작업 결과 뒤 처리
 			else if (pOverlappedEx->m_eOperation == IOOperation::SEND)
 			{
+
 
 			}
 			else
