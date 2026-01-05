@@ -29,6 +29,21 @@ public:
 
 	}
 
+	int SetLogin(char* userID_)
+	{
+		mCurDomainState = DOMAIN_STATE::LOGIN;
+		mUserID = userID_;
+
+		return 0;
+	}
+
+	void EnterRoom()
+	{
+
+	}
+
+
+
 	std::string GetUserId() const
 	{
 		return mUserID;
@@ -116,6 +131,10 @@ private:
 	INT32 mRoomIndex = -1;
 
 	std::string mUserID;
+
+
+	DOMAIN_STATE mCurDomainState = DOMAIN_STATE::NONE;
+
 
 	UINT32 mPacketDataBufferWPos = 0;
 

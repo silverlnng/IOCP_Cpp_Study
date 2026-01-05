@@ -1,6 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <unordered_map>
+
+#include "ErrorCode.h"
 #include "User.h"
 
 class UserManager
@@ -24,11 +26,51 @@ public:
 		}
 	}
 
+	INT32 GetCurrentUserCnt() { return mCurrentUserCnt; }
+
+	INT32 GetMaxUserCnt() { return mMaxUserCnt; }
+
+	void IncreaseUserCnt() { mCurrentUserCnt++; }
+
+	void DecreaseUserCnt()
+	{
+		if (mCurrentUserCnt > 0)
+		{
+			mCurrentUserCnt--;
+		}
+	}
+
+	ERROR_CODE AddUser(char* userID_,int clientIndex_)
+	{
+		// TODO : 유저의 중복 조사 필요
+
+		auto user_idx = clientIndex_;
+
+		mUserObjPool[user_idx]->SetLogin(userID_);
+
+		mUserIDDictionary.insert(std::pair<char* , int>(userID_,clientIndex_));
+
+		return ERROR_CODE::NONE;
+	}
+
+	INT32 FindUserIndexByID(char* userID_)
+	{
+		if (auto res = mUserIDDictionary.find(userID_);
+			res != mUserIDDictionary.end())
+		{
+			return res->second;
+		}
+
+		return -1;
+	}
+
+
 	void DeleteUserInfo(User* user_)
 	{
 
 		// 유저가 연결을 끊어도 파괴(delete)가 아니라 내부데이터만 초기화 하여서 재사용
-		//user_->Clear();
+		mUserIDDictionary.erase(user_->GetUserId());
+		user_->Clear();
 	}
 
 	User* GetUserByConnIdx(INT32 clientIndex_)
@@ -44,4 +86,6 @@ private:
 
 	// Object Pool 패턴 사용으로 서버 접속자 관리.
 	std::vector<User*> mUserObjPool;
+
+	std::unordered_map<std::string, int> mUserIDDictionary;
 };

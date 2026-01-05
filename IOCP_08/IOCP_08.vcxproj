@@ -134,9 +134,12 @@
     <ClInclude Include="ChatServer.h" />
     <ClInclude Include="ClientInfo.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="ErrorCode.h" />
     <ClInclude Include="IOCPServer.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketManager.h" />
+    <ClInclude Include="RedisManager.h" />
+    <ClInclude Include="RedisTaskDefine.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="UserManager.h" />
   </ItemGroup>

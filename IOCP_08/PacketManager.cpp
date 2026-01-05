@@ -2,6 +2,7 @@
 
 #include "UserManager.h"
 #include "PacketManager.h"
+#include "RedisManager.h"
 
 void PacketManager::Init(const UINT32 maxClient_)
 {
@@ -10,6 +11,7 @@ void PacketManager::Init(const UINT32 maxClient_)
 	// 멤버함수의 메모리 주소 (value) 에 저장
 
 	mRecvFuntionalDictionary[(int)PACKET_ID::SYS_USER_CONNECT] = &PacketManager::ProcessUserConnect;
+
 
 	// 패킷매니저에서 시작하면서 유저매니저를 생성하고 Init 실행시킴
 	CreateComponent(maxClient_);
@@ -155,4 +157,62 @@ void PacketManager::ProcessUserConnect(UINT32 clientIndex_, UINT16 packetSize_, 
 	
 	auto pUser =mUserManager->GetUserByConnIdx(clientIndex_);
 	pUser->Clear();
+}
+
+void PacketManager::ProcessUserDisConnect(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
+{
+
+}
+
+void PacketManager::ProcessLogin(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
+{
+	if (LOGIN_REQUEST_PACKET_SIZE != packetSize_)
+	{
+		return;
+	}
+
+	auto pLoginReqPacket = reinterpret_cast<LOGIN_REQUEST_PACKET*>(pPacket_);
+
+	auto pUserID = pLoginReqPacket->UserID;
+
+	printf("Request User ID = %s\n", pUserID);
+
+	LOGIN_RESPONSE_PACKET loginResPacket;
+	loginResPacket.PacketId = (UINT16)PACKET_ID::LOGIN_RESPONSE;
+	loginResPacket.PacketLengeh = sizeof(LOGIN_RESPONSE_PACKET);
+
+
+
+	if (mUserManager->GetCurrentUserCnt() >= mUserManager ->GetMaxUserCnt())
+	{
+		// UserManager 를 통해  최대유저 , 현재 들어온 유저 수를 비교해서 남은 인원수가 있는지 확인
+
+		// 지금 접속자 수가 최대 인원수 보다 같거나 커서 접속불가
+
+		// 에러 코드 적어서 응답하기  
+		loginResPacket.Result = (UINT16)ERROR_CODE::LOGIN_USER_USED_ALL_OBJ;
+
+		SendPacketFunc(clientIndex_,sizeof(LOGIN_RESPONSE_PACKET),(char*)&loginResPacket);
+
+		return;
+	}
+
+	// 여기서는 이미 접속된 유저인지 확인. 
+	if (mUserManager->FindUserIndexByID(pUserID) == -1)
+	{
+		// 이미 접속중인 유저 아님
+		
+
+	}
+	else
+	{
+		// 이미 mUserIDDictionary 에 등록된 접속중인 유저
+
+		// 접속 중인 유저여서 실패를 반환
+	}
+
+}
+
+void PacketManager::ProcessLoginDBResult(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
+{
 }

@@ -9,6 +9,7 @@
 #include <functional>
 
 class UserManager;
+class RedisManager;
 
 class PacketManager
 {
@@ -43,6 +44,12 @@ private:
 
 	void ProcessUserConnect(UINT32 clientIndex_,UINT16 packetSize_,char* pPacket_);
 
+	void ProcessUserDisConnect(UINT32 clientIndex_,UINT16 packetSize_,char* pPacket_);
+
+	void ProcessLogin(UINT32 clientIndex_,UINT16 packetSize_,char* pPacket_);
+
+	void ProcessLoginDBResult(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);
+
 
 
 	// 멤버 함수 포인터를 "PROCESS_RECV_PACKET_FUNCTION" 이라는 별칭으로  정의
@@ -53,7 +60,9 @@ private:
 	std::unordered_map<int, PROCESS_RECV_PACKET_FUNCTION> mRecvFuntionalDictionary;
 
 	UserManager* mUserManager;
+	RedisManager* mRedisManager;
 
+	std::function<void(int, char*)> mSendMQDataFunc;
 
 	bool mIsRunProcessThread = false;
 

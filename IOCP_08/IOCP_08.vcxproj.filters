@@ -15,6 +15,9 @@
     <ClInclude Include="Define.h">
       <Filter>ServerNetwork</Filter>
     </ClInclude>
+    <ClInclude Include="RedisManager.h" />
+    <ClInclude Include="ErrorCode.h" />
+    <ClInclude Include="RedisTaskDefine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PacketManager.cpp" />
