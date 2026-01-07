@@ -71,6 +71,9 @@ void PacketManager::ProcessPacket()
 			ProcessRecvPacket(packetData.ClientIndex, packetData.PacketId, packetData.DataSize, packetData.pDataPtr);
 		}
 
+		// Redis 의 응답 Task 확인하고 가져오기 추가
+
+
 
 		if (isIdle)
 		{

@@ -80,3 +80,12 @@ struct LOGIN_RESPONSE_PACKET : public PACKET_HEADER
 };
 
 // 룸에 들어가기 요청
+struct ROOM_ENTER_REQUEST_PACKET : public PACKET_HEADER
+{
+	INT32 RoomNumber;
+};
+
+struct ROOM_ENTER_RESPONSE_PACKET : public PACKET_HEADER
+{
+	INT16 Result;
+};
