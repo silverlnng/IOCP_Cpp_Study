@@ -18,6 +18,7 @@
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4200)
+// Ensure hiredis.h is found by the compiler
 #include <hiredis.h>
 #pragma warning(pop)
 #else

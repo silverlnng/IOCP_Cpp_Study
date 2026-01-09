@@ -31,11 +31,26 @@ public:
 		return true;
 	}
 
+	void PushTask(RedisTask task_)
+	{
+		std::lock_guard<std::mutex> guard(mReqLock);
+		mRequestTask.push_back(task_);
+	}
+
+	// Packet Manager 의 ProcessThread 에서 계속 확인하고 작동 중
 	RedisTask TakeResponseTask()
 	{
-		// Packet Manager 의 ProcessThread 에서 계속 확인하고 작동 중
+		std::lock_guard<std::mutex> guard(mResLock);
 
+		if(mResponseTask.empty())
+		{
+			return RedisTask();
+		}
 
+		auto task = mResponseTask.front();
+		mResponseTask.pop_front();
+
+		return task;
 	}
 
 private:
@@ -66,8 +81,9 @@ private:
 			{
 				isIdle = false;
 
-			
-		
+				// 작업 종류에 따라서 처리하기
+
+				// 로그인 요청 처리
 				if (task.TaskID == RedisTaskID::REQUEST_LOGIN)
 				{
 					auto pRequest = (RedisLoginReq*)task.pData;
@@ -93,13 +109,31 @@ private:
 					RedisTask resTask;
 
 					// 이번에는 작업종류를 RESPONSE_LOGIN 으로 변경하고
+					// mResponseTask 에 넣음 = > 그럼 PacketManager 쪽 의 thread 에서 검사하고 가져가서 처리함
+					
+					resTask.UserIndex = task.UserIndex;
+					resTask.TaskID = RedisTaskID::RESPONSE_LOGIN;
+					resTask.DataSize = sizeof(RedisLoginRes);
+					resTask.pData = new char[resTask.DataSize];
 
+					CopyMemory(resTask.pData, (char*)&bodyData, resTask.DataSize);
+					
+					PushResponse(resTask);
 
 				}
 
+				task.Release();
+			}
+
+			if (isIdle)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
 
 		}
+
+		printf(" Redis 의 스레드 종료 \n");
+
 	}
 
 	RedisTask TakeRequestTask()
@@ -115,6 +149,12 @@ private:
 		mRequestTask.pop_front();
 
 		return task;
+	}
+
+	void PushResponse(RedisTask task_)
+	{
+		std::lock_guard<std::mutex> guard(mResLock);
+		mResponseTask.push_back(task_);	
 	}
 
 

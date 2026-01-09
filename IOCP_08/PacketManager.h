@@ -32,6 +32,8 @@ public:
 private:
 	void CreateComponent(const UINT32 maxClient_);
 
+
+
 	void EnqueuePacketData(const UINT32 clientIndex_);
 
 	PacketInfo DequePacketData();
@@ -50,6 +52,11 @@ private:
 
 	void ProcessLoginDBResult(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);
 
+	void ProcessEnterRoom(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);
+
+	void ProcessLeaveRoom(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);
+
+	void ProcessRoomChatMessage(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);
 
 
 	// 멤버 함수 포인터를 "PROCESS_RECV_PACKET_FUNCTION" 이라는 별칭으로  정의

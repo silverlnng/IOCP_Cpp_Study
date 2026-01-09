@@ -89,3 +89,34 @@ struct ROOM_ENTER_RESPONSE_PACKET : public PACKET_HEADER
 {
 	INT16 Result;
 };
+
+// 룸에서 나가기 요청
+struct ROOM_LEAVE_REQUEST_PACKET : public PACKET_HEADER
+{
+
+};
+
+struct ROOM_LEAVE_RESPONSE_PACKET : public PACKET_HEADER
+{
+	INT16 Result;
+};
+
+// 룸 채팅 메시지 전송 요청
+const int MAX_ROOM_CHAT_MSG_SIZE = 256;
+struct ROOM_CHAT_REQUEST_PACKET : public PACKET_HEADER
+{
+	char Message[MAX_ROOM_CHAT_MSG_SIZE + 1] = {0,};
+};
+
+struct ROOM_CHAT_REPONSE_PACKET : public PACKET_HEADER
+{
+	UINT16 Result;
+};
+
+struct ROOM_CHAT_NOTIFY_PACKET : public PACKET_HEADER
+{
+	char UserID[MAX_USER_ID_LEN + 1] = { 0, };
+	char Msg[MAX_ROOM_CHAT_MSG_SIZE + 1] = { 0, };
+};
+
+#pragma pack(pop) // 위에 설정된 패킹설정이 사라짐
