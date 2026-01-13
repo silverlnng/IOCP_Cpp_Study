@@ -10,6 +10,7 @@
 
 class UserManager;
 class RedisManager;
+class RoomManager;
 
 class PacketManager
 {
@@ -32,7 +33,7 @@ public:
 private:
 	void CreateComponent(const UINT32 maxClient_);
 
-
+	void ClearConnectionInfo(UINT32 clientIndex_);
 
 	void EnqueuePacketData(const UINT32 clientIndex_);
 
@@ -68,6 +69,7 @@ private:
 
 	UserManager* mUserManager;
 	RedisManager* mRedisManager;
+	RoomManager* mRoomManager;
 
 	std::function<void(int, char*)> mSendMQDataFunc;
 
@@ -79,6 +81,9 @@ private:
 
 	std::deque<UINT32> mInComingPacketUserIndex;
 
+	// 연결 성립, 연결 종료때 만 사용.
+	// 데이터 버퍼에 쌓을 필요없음
+	// 패킷을 받은 즉시 처리하면 된다
 	std::deque<PacketInfo> mSystemPacketQueue;
 };
 

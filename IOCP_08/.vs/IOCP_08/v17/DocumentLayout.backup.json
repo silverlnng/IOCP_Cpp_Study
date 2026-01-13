@@ -3,24 +3,36 @@
   "WorkspaceRootPath": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\RoomManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:RoomManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\Room.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:Room.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\PacketManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:PacketManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\RoomManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:RoomManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\PacketManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:PacketManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\PacketManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:PacketManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\Packet.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:Packet.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\IOCPServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:IOCPServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\ChatServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:ChatServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\User.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:User.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\RedisManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -37,10 +49,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\RedisTaskDefine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:RedisTaskDefine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\IOCPServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{583357C7-66E3-486B-930C-C500AF49A3AA}|IOCP_08.vcxproj|solutionrelative:IOCPServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,8 +58,34 @@
       "DocumentGroups": [
         {
           "DockedWidth": 193,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 10,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ChatServer.h",
+              "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\ChatServer.h",
+              "RelativeDocumentMoniker": "ChatServer.h",
+              "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\ChatServer.h",
+              "RelativeToolTip": "ChatServer.h",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABcAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-13T01:43:43.7Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "User.h",
+              "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\User.h",
+              "RelativeDocumentMoniker": "User.h",
+              "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\User.h",
+              "RelativeToolTip": "User.h",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-12T00:38:19.303Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 4,
@@ -60,53 +94,53 @@
               "RelativeDocumentMoniker": "Packet.h",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\Packet.h",
               "RelativeToolTip": "Packet.h",
-              "ViewState": "AgIAACEAAAAAAAAAAAAAAHcAAAACAAAAAAAAAA==",
+              "ViewState": "AgIAAEoAAAAAAAAAAAAAAF8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-01-09T00:46:03.103Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 5,
               "Title": "IOCPServer.h",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\IOCPServer.h",
               "RelativeDocumentMoniker": "IOCPServer.h",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\IOCPServer.h",
               "RelativeToolTip": "IOCPServer.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-01-09T00:36:43.253Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "PacketManager.h",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\PacketManager.h",
               "RelativeDocumentMoniker": "PacketManager.h",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\PacketManager.h",
               "RelativeToolTip": "PacketManager.h",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAAAEUAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAEoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-01-09T00:46:18.741Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "PacketManager.cpp",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\PacketManager.cpp",
               "RelativeDocumentMoniker": "PacketManager.cpp",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\PacketManager.cpp",
               "RelativeToolTip": "PacketManager.cpp",
-              "ViewState": "AgIAACYBAAAAAAAAAAAAACMBAABWAAAAAAAAAA==",
+              "ViewState": "AgIAADUBAAAAAAAAAAAnwEoBAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-01-09T00:38:16.251Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "ClientInfo.h",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\ClientInfo.h",
               "RelativeDocumentMoniker": "ClientInfo.h",
@@ -114,12 +148,11 @@
               "RelativeToolTip": "ClientInfo.h",
               "ViewState": "AgIAABIBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-09T02:39:24.159Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-09T02:39:24.159Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "RedisManager.h",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\RedisManager.h",
               "RelativeDocumentMoniker": "RedisManager.h",
@@ -127,12 +160,11 @@
               "RelativeToolTip": "RedisManager.h",
               "ViewState": "AgIAAJgAAAAAAAAAAAApwKsAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-09T01:16:06.899Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-09T01:16:06.899Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "RedisTaskDefine.h",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\RedisTaskDefine.h",
               "RelativeDocumentMoniker": "RedisTaskDefine.h",
@@ -140,12 +172,11 @@
               "RelativeToolTip": "RedisTaskDefine.h",
               "ViewState": "AgIAACQAAAAAAAAAAAAAAC8AAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-09T01:33:48.351Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-09T01:33:48.351Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "ErrorCode.h",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\ErrorCode.h",
               "RelativeDocumentMoniker": "ErrorCode.h",
@@ -153,31 +184,30 @@
               "RelativeToolTip": "ErrorCode.h",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABIAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-09T01:36:44.961Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-09T01:36:44.961Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Room.h",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\Room.h",
               "RelativeDocumentMoniker": "Room.h",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\Room.h",
               "RelativeToolTip": "Room.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABQAAAAAAAAAAAAUwC4AAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-01-09T03:01:14.304Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "RoomManager.h",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\RoomManager.h",
               "RelativeDocumentMoniker": "RoomManager.h",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\IOCP_08\\RoomManager.h",
               "RelativeToolTip": "RoomManager.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-01-09T03:02:26.938Z",
               "EditorCaption": ""

@@ -35,7 +35,7 @@ public partial class MainForm : Form
 
         // 스레드 시작
 
-        IsNetworkThreadRunning=true;
+        IsNetworkThreadRunning = true;
 
         NetworkReadThread = new System.Threading.Thread(this.NetworkReadProcess);
         NetworkReadThread.Start();
@@ -45,7 +45,7 @@ public partial class MainForm : Form
 
         // UI 타이머 가동 :  dispatcherUITimer를 생성하고 0.1초 간격으로 BackGroundProcess가 실행되도록 설정합니다. 이는 수신된 패킷을 처리하고 UI 로그를 남기는 역할을 합니다.
 
-        IsBackGroundProcessRunning=true;
+        IsBackGroundProcessRunning = true;
 
         dispatcherUITimer = new System.Windows.Forms.Timer();
 
@@ -153,13 +153,13 @@ public partial class MainForm : Form
                 {
                     var data = PacketBuffer.Read();
 
-                    if(data.Count <1)
+                    if (data.Count < 1)
                     {
                         break;
                     }
 
                     var packet = new PacketData();
-                    packet.DataSize = (short) (data.Count - PacketHeaderSize);
+                    packet.DataSize = (short)(data.Count - PacketHeaderSize);
 
                     // 패킷헤더 
                     // 0~1 : UINT16 PacketLength
@@ -173,11 +173,11 @@ public partial class MainForm : Form
                     packet.Type = (SByte)data.Array[(data.Offset + 4)];
 
                     // 버퍼에 헤더를 건너띄고( 5번 인덱스 부터 시작점으로 복사) , 내용물 바디만 복사함
-                    Buffer.BlockCopy(data.Array, (data.Offset + PacketHeaderSize), packet.BodyData,0, (data.Count - PacketHeaderSize));
+                    Buffer.BlockCopy(data.Array, (data.Offset + PacketHeaderSize), packet.BodyData, 0, (data.Count - PacketHeaderSize));
 
                     // 공유자원 RecvPacketQueue 에 락을 걸고 
                     // RecvPacketQueue 은 dispatcherUITimer에 의해서 작동하고 있는 BackGroundProcess 함수에서 계속 접근중 (UI 스레드 위에서 작동). => 그래서 공유자원
-                    lock (RecvPacketQueue)  
+                    lock (RecvPacketQueue)
                     {
                         RecvPacketQueue.Enqueue(packet);
                     }
@@ -189,7 +189,7 @@ public partial class MainForm : Form
             }
             else // recvData == null 이면
             {
-                
+
                 // 서버와 접속 종료
             }
 
@@ -229,12 +229,33 @@ public partial class MainForm : Form
 
         try
         {
+            var packet = new PacketData();
+
             // 공유자원 RecvPacketQueue에 락을 걸고 접근 
+            lock (RecvPacketQueue)
+            {
+                if (RecvPacketQueue.Count > 0)
+                {
+                    packet = RecvPacketQueue.Dequeue();
+                }
+            }
+
+            if(packet.PacketID != 0)
+            {
+                
+            }
         }
         catch
         {
-            
+
         }
+
+    }
+
+    private void btn_RoomEnter_Click(object sender, EventArgs e)
+    {
+
+        
 
     }
 }

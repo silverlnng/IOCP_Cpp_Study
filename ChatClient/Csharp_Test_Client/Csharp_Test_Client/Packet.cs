@@ -14,7 +14,8 @@ namespace Csharp_Test_Client
         public byte[] BodyData;
     }
 
-    class Packet
+    public class LoginReqPacket
     {
+        byte[] UserID = new byte[PacketDef.];
     }
 }

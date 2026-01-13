@@ -46,10 +46,10 @@
             labelStatus = new Label();
             groupBox2 = new GroupBox();
             Room = new GroupBox();
+            btn_RoomLeave = new Button();
+            btn_RoomEnter = new Button();
             label5 = new Label();
             textBox1 = new TextBox();
-            btn_RoomEnter = new Button();
-            btn_RoomLeave = new Button();
             listBoxLog = new ListBox();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -229,6 +229,25 @@
             Room.TabStop = false;
             Room.Text = "Room";
             // 
+            // btn_RoomLeave
+            // 
+            btn_RoomLeave.Location = new Point(282, 31);
+            btn_RoomLeave.Name = "btn_RoomLeave";
+            btn_RoomLeave.Size = new Size(75, 23);
+            btn_RoomLeave.TabIndex = 3;
+            btn_RoomLeave.Text = "Leave";
+            btn_RoomLeave.UseVisualStyleBackColor = true;
+            // 
+            // btn_RoomEnter
+            // 
+            btn_RoomEnter.Location = new Point(201, 31);
+            btn_RoomEnter.Name = "btn_RoomEnter";
+            btn_RoomEnter.Size = new Size(75, 23);
+            btn_RoomEnter.TabIndex = 2;
+            btn_RoomEnter.Text = "Enter";
+            btn_RoomEnter.UseVisualStyleBackColor = true;
+            btn_RoomEnter.Click += btn_RoomEnter_Click;
+            // 
             // label5
             // 
             label5.AutoSize = true;
@@ -244,24 +263,6 @@
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(64, 23);
             textBox1.TabIndex = 0;
-            // 
-            // btn_RoomEnter
-            // 
-            btn_RoomEnter.Location = new Point(201, 31);
-            btn_RoomEnter.Name = "btn_RoomEnter";
-            btn_RoomEnter.Size = new Size(75, 23);
-            btn_RoomEnter.TabIndex = 2;
-            btn_RoomEnter.Text = "Enter";
-            btn_RoomEnter.UseVisualStyleBackColor = true;
-            // 
-            // btn_RoomLeave
-            // 
-            btn_RoomLeave.Location = new Point(282, 31);
-            btn_RoomLeave.Name = "btn_RoomLeave";
-            btn_RoomLeave.Size = new Size(75, 23);
-            btn_RoomLeave.TabIndex = 3;
-            btn_RoomLeave.Text = "Leave";
-            btn_RoomLeave.UseVisualStyleBackColor = true;
             // 
             // listBoxLog
             // 

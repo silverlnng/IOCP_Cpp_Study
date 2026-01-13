@@ -16,6 +16,9 @@ public:
 		ROOM =2
 	};
 
+	User() = default;
+	~User() = default;
+
 	void Init(const INT32 index)
 	{
 		mIndex = index;
@@ -26,7 +29,11 @@ public:
 
 	void Clear()
 	{
-
+		mRoomIndex = -1;
+		mUserID = "";
+		
+		mPacketDataBufferWPos = 0;
+		mPacketDataBufferRPos = 0;
 	}
 
 	int SetLogin(char* userID_)
@@ -37,11 +44,16 @@ public:
 		return 0;
 	}
 
-	void EnterRoom()
+	void EnterRoom(INT32 roomIndex_)
 	{
-
+		mRoomIndex = roomIndex_;
+		mCurDomainState = DOMAIN_STATE::ROOM;
 	}
 
+	INT32 GetCurrentRoom()
+	{
+		return mRoomIndex;
+	}
 
 
 	std::string GetUserId() const

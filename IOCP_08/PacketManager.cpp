@@ -19,6 +19,7 @@ void PacketManager::Init(const UINT32 maxClient_)
 	mRecvFuntionalDictionary[(int)PACKET_ID::ROOM_ENTER_REQUEST] = &PacketManager::ProcessEnterRoom;
 
 
+
 	// 패킷매니저에서 시작하면서 유저매니저를 생성하고 Init 실행시킴
 	CreateComponent(maxClient_);
 
@@ -32,6 +33,8 @@ void PacketManager::CreateComponent(const UINT32 maxClient_)
 
 
 }
+
+
 
 bool PacketManager::Run()
 {
@@ -58,6 +61,14 @@ void PacketManager::End()
 	}
 }
 
+void PacketManager::ClearConnectionInfo(UINT32 clientIndex_)
+{
+	auto pReqUser = mUserManager->GetUserByConnIdx(clientIndex_);
+
+	//if (pReqUser->)
+
+}
+
 void PacketManager::ReceivePacketData(const UINT32 clientIndex_, const UINT size_, char* pData_)
 {
 	auto pUser = mUserManager->GetUserByConnIdx(clientIndex_);
@@ -67,8 +78,12 @@ void PacketManager::ReceivePacketData(const UINT32 clientIndex_, const UINT size
 	EnqueuePacketData(clientIndex_);
 }
 
+
+// 패킷이 들어오는걸 검사하고 , 처리하는 스레드
+
 void PacketManager::ProcessPacket()
 {
+	
 	while (mIsRunProcessThread)
 	{
 		bool  isIdle = true;
@@ -183,12 +198,15 @@ void PacketManager::ProcessUserConnect(UINT32 clientIndex_, UINT16 packetSize_, 
 	printf("[ProcessUserConnect] clientIndex : %d\n", clientIndex_);
 	
 	auto pUser =mUserManager->GetUserByConnIdx(clientIndex_);
+
 	pUser->Clear();
 }
 
 void PacketManager::ProcessUserDisConnect(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
 {
+	printf("[ProcessUserDisConnect] clientIndex : %d\n", clientIndex_)
 
+	
 }
 
 
@@ -294,10 +312,29 @@ void PacketManager::ProcessEnterRoom(UINT32 clientIndex_, UINT16 packetSize_, ch
 	// UNREFERENCED_PARAMETER : 매개변수가 사용되지 않음을 컴파일러에 알리는 매크로 (매개변수 안쓸때 경고가 안나오도록 한다 )
 	UNREFERENCED_PARAMETER(packetSize_);
 
+	// 룸넘버가 추가된 패킷구조체로 캐스팅
+	auto pEnterRoomReqPacket =reinterpret_cast<ROOM_ENTER_REQUEST_PACKET*>(pPacket_);
+
+	auto pReqUser = mUserManager->GetUserByConnIdx(clientIndex_);
+
+	if(!pReqUser || pReqUser == nullptr)
+	{
+		return;
+	}
+
+	ROOM_ENTER_RESPONSE_PACKET roomEnterResPacket;
+
+	roomEnterResPacket.PacketId = (UINT16)PACKET_ID::ROOM_ENTER_RESPONSE;
+
+	roomEnterResPacket.PacketLengeh = sizeof(ROOM_ENTER_RESPONSE_PACKET);
+
+	roomEnterResPacket.Result = mRoomManager
+
 }
 
 void PacketManager::ProcessLeaveRoom(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
 {
+
 }
 
 void PacketManager::ProcessRoomChatMessage(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
