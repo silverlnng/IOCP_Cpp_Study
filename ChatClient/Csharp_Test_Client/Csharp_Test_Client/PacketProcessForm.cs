@@ -15,13 +15,34 @@ namespace Csharp_Test_Client
 
         void SetPacketHandler()
         {
-
+            PacketFuncDic.Add(PACKET_ID.DEV_ECHO, PacketProcess_DevEcho);
         }
 
         void PacketProcess(PacketData packet)
         {
+            var packetType = (PACKET_ID)packet.PacketID;
+
+            if (PacketFuncDic.ContainsKey(packetType))
+            {
+                PacketFuncDic[packetType](packet.BodyData);
+            }
+            else
+            {
+
+            }
+        }
+
+        void PacketProcess_DevEcho(byte[] bodyData)
+        {
 
         }
+
+        void PacketProcess_LoginResponse(byte[] bodyData)
+        {
+
+        }
+
+
 
     }
 }

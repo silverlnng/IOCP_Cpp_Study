@@ -93,6 +93,14 @@ namespace Csharp_Test_Client
             }
         }
 
+        public void Close()
+        {
+            if(Sock != null && Sock.Connected)
+            {
+                Sock.Close();
+            }
+        }
+
         public bool IsConnected()
         {
             // 소켓이 있고 , 연결되어있으면 true

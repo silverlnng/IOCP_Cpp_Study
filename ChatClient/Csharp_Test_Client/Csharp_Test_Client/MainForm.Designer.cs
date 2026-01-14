@@ -37,8 +37,8 @@
             BtnConnect = new Button();
             BtnDisconnect = new Button();
             textSendText = new TextBox();
-            button_Echo = new Button();
-            BtnLogin = new Button();
+            Btn_Echo = new Button();
+            Btn_Login = new Button();
             textBoxUserID = new TextBox();
             textBoxUserPW = new TextBox();
             label3 = new Label();
@@ -48,7 +48,7 @@
             Room = new GroupBox();
             label7 = new Label();
             listBoxRoomUserList = new ListBox();
-            listBox1 = new ListBox();
+            listBoxRoomChatMsg = new ListBox();
             btn_RoomLeave = new Button();
             btn_RoomEnter = new Button();
             label5 = new Label();
@@ -59,7 +59,9 @@
             BtnMultiDisConnect = new Button();
             BtnMultiConnect = new Button();
             label6 = new Label();
-            textBox1 = new TextBox();
+            textBoxClientNum = new TextBox();
+            textBoxRoomSendMsg = new TextBox();
+            btnRoomChat = new Button();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             Room.SuspendLayout();
@@ -143,6 +145,7 @@
             BtnDisconnect.TabIndex = 2;
             BtnDisconnect.Text = "접속 끊기";
             BtnDisconnect.UseVisualStyleBackColor = true;
+            BtnDisconnect.Click += BtnDisconnect_Click;
             // 
             // textSendText
             // 
@@ -151,25 +154,25 @@
             textSendText.Size = new Size(457, 23);
             textSendText.TabIndex = 3;
             // 
-            // button_Echo
+            // Btn_Echo
             // 
-            button_Echo.Location = new Point(475, 101);
-            button_Echo.Name = "button_Echo";
-            button_Echo.Size = new Size(79, 29);
-            button_Echo.TabIndex = 4;
-            button_Echo.Text = "에코 보내기";
-            button_Echo.UseVisualStyleBackColor = true;
-            button_Echo.Click += button_Echo_Click;
+            Btn_Echo.Location = new Point(475, 101);
+            Btn_Echo.Name = "Btn_Echo";
+            Btn_Echo.Size = new Size(79, 29);
+            Btn_Echo.TabIndex = 4;
+            Btn_Echo.Text = "에코 보내기";
+            Btn_Echo.UseVisualStyleBackColor = true;
+            Btn_Echo.Click += button_Echo_Click;
             // 
-            // BtnLogin
+            // Btn_Login
             // 
-            BtnLogin.Location = new Point(337, 38);
-            BtnLogin.Name = "BtnLogin";
-            BtnLogin.Size = new Size(108, 28);
-            BtnLogin.TabIndex = 5;
-            BtnLogin.Text = "Login";
-            BtnLogin.UseVisualStyleBackColor = true;
-            BtnLogin.Click += BtnLogin_Click;
+            Btn_Login.Location = new Point(337, 38);
+            Btn_Login.Name = "Btn_Login";
+            Btn_Login.Size = new Size(108, 28);
+            Btn_Login.TabIndex = 5;
+            Btn_Login.Text = "Login";
+            Btn_Login.UseVisualStyleBackColor = true;
+            Btn_Login.Click += BtnLogin_Click;
             // 
             // textBoxUserID
             // 
@@ -207,7 +210,7 @@
             // 
             labelStatus.AutoSize = true;
             labelStatus.Font = new Font("Malgun Gothic", 10F);
-            labelStatus.Location = new Point(22, 1008);
+            labelStatus.Location = new Point(18, 1033);
             labelStatus.Name = "labelStatus";
             labelStatus.Size = new Size(134, 19);
             labelStatus.TabIndex = 10;
@@ -215,7 +218,7 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(BtnLogin);
+            groupBox2.Controls.Add(Btn_Login);
             groupBox2.Controls.Add(textBoxUserPW);
             groupBox2.Controls.Add(label3);
             groupBox2.Controls.Add(label4);
@@ -229,16 +232,18 @@
             // 
             // Room
             // 
+            Room.Controls.Add(btnRoomChat);
+            Room.Controls.Add(textBoxRoomSendMsg);
             Room.Controls.Add(label7);
             Room.Controls.Add(listBoxRoomUserList);
-            Room.Controls.Add(listBox1);
+            Room.Controls.Add(listBoxRoomChatMsg);
             Room.Controls.Add(btn_RoomLeave);
             Room.Controls.Add(btn_RoomEnter);
             Room.Controls.Add(label5);
             Room.Controls.Add(textBoxRoomNumber);
-            Room.Location = new Point(18, 436);
+            Room.Location = new Point(13, 465);
             Room.Name = "Room";
-            Room.Size = new Size(541, 352);
+            Room.Size = new Size(603, 396);
             Room.TabIndex = 12;
             Room.TabStop = false;
             Room.Text = "Room";
@@ -256,19 +261,19 @@
             // 
             listBoxRoomUserList.FormattingEnabled = true;
             listBoxRoomUserList.ItemHeight = 15;
-            listBoxRoomUserList.Location = new Point(15, 91);
+            listBoxRoomUserList.Location = new Point(18, 82);
             listBoxRoomUserList.Name = "listBoxRoomUserList";
             listBoxRoomUserList.Size = new Size(245, 244);
             listBoxRoomUserList.TabIndex = 5;
             // 
-            // listBox1
+            // listBoxRoomChatMsg
             // 
-            listBox1.FormattingEnabled = true;
-            listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(282, 91);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(253, 244);
-            listBox1.TabIndex = 4;
+            listBoxRoomChatMsg.FormattingEnabled = true;
+            listBoxRoomChatMsg.ItemHeight = 15;
+            listBoxRoomChatMsg.Location = new Point(282, 82);
+            listBoxRoomChatMsg.Name = "listBoxRoomChatMsg";
+            listBoxRoomChatMsg.Size = new Size(253, 244);
+            listBoxRoomChatMsg.TabIndex = 4;
             // 
             // btn_RoomLeave
             // 
@@ -278,6 +283,7 @@
             btn_RoomLeave.TabIndex = 3;
             btn_RoomLeave.Text = "Leave";
             btn_RoomLeave.UseVisualStyleBackColor = true;
+            btn_RoomLeave.Click += btn_RoomLeave_Click;
             // 
             // btn_RoomEnter
             // 
@@ -304,14 +310,15 @@
             textBoxRoomNumber.Name = "textBoxRoomNumber";
             textBoxRoomNumber.Size = new Size(64, 23);
             textBoxRoomNumber.TabIndex = 0;
+            textBoxRoomNumber.Text = "0";
             // 
             // listBoxLog
             // 
             listBoxLog.FormattingEnabled = true;
             listBoxLog.ItemHeight = 15;
-            listBoxLog.Location = new Point(18, 794);
+            listBoxLog.Location = new Point(18, 867);
             listBoxLog.Name = "listBoxLog";
-            listBoxLog.Size = new Size(468, 199);
+            listBoxLog.Size = new Size(468, 154);
             listBoxLog.TabIndex = 13;
             // 
             // groupBox3
@@ -320,10 +327,10 @@
             groupBox3.Controls.Add(BtnMultiDisConnect);
             groupBox3.Controls.Add(BtnMultiConnect);
             groupBox3.Controls.Add(label6);
-            groupBox3.Controls.Add(textBox1);
+            groupBox3.Controls.Add(textBoxClientNum);
             groupBox3.Location = new Point(8, 244);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(546, 186);
+            groupBox3.Size = new Size(546, 215);
             groupBox3.TabIndex = 14;
             groupBox3.TabStop = false;
             groupBox3.Text = "테스트";
@@ -365,24 +372,42 @@
             label6.TabIndex = 1;
             label6.Text = "테스트 클라이언트 인원 수 :";
             // 
-            // textBox1
+            // textBoxClientNum
             // 
-            textBox1.Location = new Point(170, 28);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(100, 23);
-            textBox1.TabIndex = 0;
+            textBoxClientNum.Location = new Point(170, 28);
+            textBoxClientNum.Name = "textBoxClientNum";
+            textBoxClientNum.Size = new Size(100, 23);
+            textBoxClientNum.TabIndex = 0;
+            // 
+            // textBoxRoomSendMsg
+            // 
+            textBoxRoomSendMsg.Location = new Point(18, 342);
+            textBoxRoomSendMsg.Name = "textBoxRoomSendMsg";
+            textBoxRoomSendMsg.Size = new Size(438, 23);
+            textBoxRoomSendMsg.TabIndex = 7;
+            textBoxRoomSendMsg.Text = "chat 메세지";
+            // 
+            // btnRoomChat
+            // 
+            btnRoomChat.Location = new Point(466, 341);
+            btnRoomChat.Name = "btnRoomChat";
+            btnRoomChat.Size = new Size(75, 23);
+            btnRoomChat.TabIndex = 8;
+            btnRoomChat.Text = "Chat";
+            btnRoomChat.UseVisualStyleBackColor = true;
+            btnRoomChat.Click += btnRoomChat_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(571, 1055);
+            ClientSize = new Size(620, 1061);
             Controls.Add(groupBox3);
             Controls.Add(listBoxLog);
             Controls.Add(Room);
             Controls.Add(groupBox2);
             Controls.Add(labelStatus);
-            Controls.Add(button_Echo);
+            Controls.Add(Btn_Echo);
             Controls.Add(textSendText);
             Controls.Add(BtnDisconnect);
             Controls.Add(BtnConnect);
@@ -412,8 +437,8 @@
         private Label label1;
         private Label label2;
         private TextBox textSendText;
-        private Button button_Echo;
-        private Button BtnLogin;
+        private Button Btn_Echo;
+        private Button Btn_Login;
         private TextBox textBoxUserID;
         private TextBox textBoxUserPW;
         private Label label3;
@@ -429,12 +454,14 @@
         private ListBox listBoxLog;
         private GroupBox groupBox3;
         private Label label6;
-        private TextBox textBox1;
+        private TextBox textBoxClientNum;
         private Button BtnMultiLogin;
         private Button BtnMultiDisConnect;
         private Button BtnMultiConnect;
         private Label label7;
         private ListBox listBoxRoomUserList;
-        private ListBox listBox1;
+        private ListBox listBoxRoomChatMsg;
+        private Button btnRoomChat;
+        private TextBox textBoxRoomSendMsg;
     }
 }

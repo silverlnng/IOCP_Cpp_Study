@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Csharp_Test_Client;
@@ -89,6 +91,12 @@ public partial class MainForm : Form
             labelStatus.Text = string.Format("{0}, 서버에 접속 실패", DateTime.Now);
         }
 
+    }
+
+    private void BtnDisconnect_Click(object sender, EventArgs e)
+    {
+        SetDisconnected();
+        Network.Close();
     }
 
     private void button_Echo_Click(object sender, EventArgs e)
@@ -228,6 +236,8 @@ public partial class MainForm : Form
         // dispatcherUITimer 에 의해서 주기적으로 호출되는 함수
         // System.Windows.Forms.Timer는 UI 스레드에서 Tick 이벤트를 발생시키므로, 이 코드는 UI 스레드 위에서 작동
 
+        ProcessLog();
+
         try
         {
             var packet = new PacketData();
@@ -243,28 +253,33 @@ public partial class MainForm : Form
 
             if (packet.PacketID != 0)
             {
-
+                PacketProcess(packet);
             }
         }
-        catch
+        catch (Exception ex)
         {
-
+            MessageBox.Show(string.Format("ReadPacketQueueProcess . error : {0}", ex.Message));
         }
 
     }
 
-    private void btn_RoomEnter_Click(object sender, EventArgs e)
+    private void ProcessLog()
     {
-        var requestPacket = new RoomEnterReqPacket();
+        // DevLog 에 로그 남기기
+        // 너무 이 작업만 할 수 없으므로 일정 작업 이상을 하면 일단 패스한다.
 
-        requestPacket.SetValue(textBoxRoomNumber.Text.ToInt32());
     }
 
-    private void BtnLogin_Click(object sender, EventArgs e)
+    public void SetDisconnected()
     {
-        var loginReqPacket = new LoginReqPacket();
+        if (BtnConnect.Enabled == false)
+        {
+            BtnConnect.Enabled = true;
+            BtnDisconnect.Enabled = false;
+        }
 
-        loginReqPacket.SetValue(textBoxUserID.Text, textBoxUserPW.Text);
+        SendPacketQueue.Clear();
+
 
     }
 
@@ -272,9 +287,81 @@ public partial class MainForm : Form
     {
         if (Network.IsConnected() == false)
         {
-
+            DevLog.Write("서버에 연결이 되어있지 않습니다", LOG_LEVEL.ERROR);
             return;
         }
+
+        Int16 bodyDataSize = 0;
+
+        if (bodyData != null)
+        {
+            bodyDataSize = (Int16)bodyData.Length;
+        }
+
+        var packetSize = bodyDataSize + PacketDef.PACKET_HEADER_SIZE;
+
+        List<byte> dataSource = new List<byte>();
+
+        dataSource.AddRange
+            (BitConverter.GetBytes((UInt16)packetSize));
+
+        dataSource.AddRange
+            (BitConverter.GetBytes((UInt16)packetID));
+
+        dataSource.AddRange
+           (new byte[] { (byte)0 });
+
+        if (bodyData != null)
+        {
+            dataSource.AddRange(bodyData);
+        }
+
+        SendPacketQueue.Enqueue(dataSource.ToArray());
+    }
+
+    private void BtnLogin_Click(object sender, EventArgs e)
+    {
+        var loginReqPacket = new LoginReqPacket();
+
+        loginReqPacket.SetValue(textBoxUserID.Text, textBoxUserPW.Text);
+        PostSendPacket(PACKET_ID.LOGIN_REQ, loginReqPacket.ToBytes());
+
+        DevLog.Write($"로그인 요청: {textBoxUserID.Text} , {textBoxUserPW.Text}");
+    }
+
+
+    private void btn_RoomEnter_Click(object sender, EventArgs e)
+    {
+        var requestPacket = new RoomEnterReqPacket();
+
+        requestPacket.SetValue(Convert.ToInt32(textBoxRoomNumber.Text));
+
+        PostSendPacket(PACKET_ID.ROOM_ENTER_REQ, requestPacket.ToBytes());
+
+        DevLog.Write($"룸 입장 요청: {textBoxRoomNumber.Text} 번");
+
+    }
+
+    private void btn_RoomLeave_Click(object sender, EventArgs e)
+    {
+        PostSendPacket(PACKET_ID.ROOM_LEAVE_REQ, null);
+
+        DevLog.Write($"방 나가기 요청:  {textBoxRoomNumber.Text} 번");
+    }
+
+    void AddRoomUserList(Int64 userUniqueId, string userID)
+    {
+        var msg = $"{userUniqueId} : {userID}";
+        listBoxRoomUserList.Items.Add(msg);
+    }
+
+    void RemoveRoomUserList(Int64 userUniqueId)
+    {
+
+    }
+
+    private void btnRoomChat_Click(object sender, EventArgs e)
+    {
 
     }
 
@@ -283,4 +370,5 @@ public partial class MainForm : Form
         // 테스트 클라이언트 인원수 만큼 ClientMultiTCP 객체를 생성하고 접속 시도
 
     }
+
 }

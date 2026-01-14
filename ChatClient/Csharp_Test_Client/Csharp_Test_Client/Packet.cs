@@ -27,6 +27,14 @@ namespace Csharp_Test_Client
             Encoding.UTF8.GetBytes(userPW).CopyTo(UserPW, 0);
         }
 
+        public byte[] ToBytes()
+        {
+            List<byte> dataSource = new List<byte>();
+            dataSource.AddRange(UserID);
+            dataSource.AddRange(UserPW);
+            return dataSource.ToArray();
+        }
+
     }
 
     public class LoginResPacket
