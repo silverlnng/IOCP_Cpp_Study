@@ -1,5 +1,6 @@
-
+using System;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Csharp_Test_Client;
 
@@ -240,9 +241,9 @@ public partial class MainForm : Form
                 }
             }
 
-            if(packet.PacketID != 0)
+            if (packet.PacketID != 0)
             {
-                
+
             }
         }
         catch
@@ -254,8 +255,32 @@ public partial class MainForm : Form
 
     private void btn_RoomEnter_Click(object sender, EventArgs e)
     {
+        var requestPacket = new RoomEnterReqPacket();
 
-        
+        requestPacket.SetValue(textBoxRoomNumber.Text.ToInt32());
+    }
+
+    private void BtnLogin_Click(object sender, EventArgs e)
+    {
+        var loginReqPacket = new LoginReqPacket();
+
+        loginReqPacket.SetValue(textBoxUserID.Text, textBoxUserPW.Text);
+
+    }
+
+    public void PostSendPacket(PACKET_ID packetID, byte[] bodyData)
+    {
+        if (Network.IsConnected() == false)
+        {
+
+            return;
+        }
+
+    }
+
+    private void BtnMultiConnect_Click(object sender, EventArgs e)
+    {
+        // 테스트 클라이언트 인원수 만큼 ClientMultiTCP 객체를 생성하고 접속 시도
 
     }
 }

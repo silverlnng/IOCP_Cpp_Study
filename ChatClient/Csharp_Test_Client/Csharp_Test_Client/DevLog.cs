@@ -10,11 +10,30 @@ namespace Csharp_Test_Client
 {
     public class DevLog
     {
+        static System.Collections.Concurrent.ConcurrentQueue<string> logMsgQueue = new System.Collections.Concurrent.ConcurrentQueue<string>();
 
-        static public void Weite()
+        static Int64 출력가능_로그레벨 = (Int64)LOG_LEVEL.TRACE;
+
+        static public void ChangeLogLevel(LOG_LEVEL level)
+        {
+            Interlocked.Exchange(ref 출력가능_로그레벨, (int)level);
+        }
+
+        static public void Write()
         {
 
         }
 
     }
+
+    public enum LOG_LEVEL : Int64
+    {
+        TRACE,
+        DEBUG,
+        INFO,
+        WARN,
+        ERROR,
+        DISABLE,
+    }
+
 }

@@ -11,7 +11,7 @@ namespace Csharp_Test_Client
     // 로그인 결과 확인, 채팅 메시지 수신, 사용자 목록 업데이트와 같은 개별적인 이벤트별 처리 메서드들이 정의되어 있어, 복잡한 통신 데이터를 체계적으로 관리하고 사용자 인터페이스에 반영하는 메시지 라우팅 시스템의 역할을 수행합니다.
     public partial class MainForm
     {
-        Dictionary<PACKET_ID,Action<byte[]>> PacketFuncDic = new Dictionary<PACKET_ID, Action<byte[]>>();
+        Dictionary<PACKET_ID, Action<byte[]>> PacketFuncDic = new Dictionary<PACKET_ID, Action<byte[]>>();
 
         void SetPacketHandler()
         {
