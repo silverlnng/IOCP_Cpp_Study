@@ -46,6 +46,8 @@
             labelStatus = new Label();
             groupBox2 = new GroupBox();
             Room = new GroupBox();
+            btnRoomChat = new Button();
+            textBoxRoomSendMsg = new TextBox();
             label7 = new Label();
             listBoxRoomUserList = new ListBox();
             listBoxRoomChatMsg = new ListBox();
@@ -60,8 +62,6 @@
             BtnMultiConnect = new Button();
             label6 = new Label();
             textBoxClientNum = new TextBox();
-            textBoxRoomSendMsg = new TextBox();
-            btnRoomChat = new Button();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             Room.SuspendLayout();
@@ -119,6 +119,7 @@
             textBoxPort.Name = "textBoxPort";
             textBoxPort.Size = new Size(100, 25);
             textBoxPort.TabIndex = 1;
+            textBoxPort.Text = "11021";
             // 
             // textBoxIP
             // 
@@ -126,6 +127,7 @@
             textBoxIP.Name = "textBoxIP";
             textBoxIP.Size = new Size(100, 25);
             textBoxIP.TabIndex = 0;
+            textBoxIP.Text = "0.0.0.0";
             // 
             // BtnConnect
             // 
@@ -153,6 +155,7 @@
             textSendText.Name = "textSendText";
             textSendText.Size = new Size(457, 23);
             textSendText.TabIndex = 3;
+            textSendText.Text = "Echo-Test";
             // 
             // Btn_Echo
             // 
@@ -247,6 +250,24 @@
             Room.TabIndex = 12;
             Room.TabStop = false;
             Room.Text = "Room";
+            // 
+            // btnRoomChat
+            // 
+            btnRoomChat.Location = new Point(466, 341);
+            btnRoomChat.Name = "btnRoomChat";
+            btnRoomChat.Size = new Size(75, 23);
+            btnRoomChat.TabIndex = 8;
+            btnRoomChat.Text = "Chat";
+            btnRoomChat.UseVisualStyleBackColor = true;
+            btnRoomChat.Click += btnRoomChat_Click;
+            // 
+            // textBoxRoomSendMsg
+            // 
+            textBoxRoomSendMsg.Location = new Point(18, 342);
+            textBoxRoomSendMsg.Name = "textBoxRoomSendMsg";
+            textBoxRoomSendMsg.Size = new Size(438, 23);
+            textBoxRoomSendMsg.TabIndex = 7;
+            textBoxRoomSendMsg.Text = "chat 메세지";
             // 
             // label7
             // 
@@ -378,24 +399,6 @@
             textBoxClientNum.Name = "textBoxClientNum";
             textBoxClientNum.Size = new Size(100, 23);
             textBoxClientNum.TabIndex = 0;
-            // 
-            // textBoxRoomSendMsg
-            // 
-            textBoxRoomSendMsg.Location = new Point(18, 342);
-            textBoxRoomSendMsg.Name = "textBoxRoomSendMsg";
-            textBoxRoomSendMsg.Size = new Size(438, 23);
-            textBoxRoomSendMsg.TabIndex = 7;
-            textBoxRoomSendMsg.Text = "chat 메세지";
-            // 
-            // btnRoomChat
-            // 
-            btnRoomChat.Location = new Point(466, 341);
-            btnRoomChat.Name = "btnRoomChat";
-            btnRoomChat.Size = new Size(75, 23);
-            btnRoomChat.TabIndex = 8;
-            btnRoomChat.Text = "Chat";
-            btnRoomChat.UseVisualStyleBackColor = true;
-            btnRoomChat.Click += btnRoomChat_Click;
             // 
             // MainForm
             // 

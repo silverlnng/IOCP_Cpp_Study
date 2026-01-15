@@ -5,3 +5,13 @@ D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_
 D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.AssemblyInfo.cs
 D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.csproj.CoreCompileInputs.cache
 D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.sourcelink.json
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\bin\Debug\net8.0-windows\Csharp_Test_Client.exe
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\bin\Debug\net8.0-windows\Csharp_Test_Client.deps.json
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\bin\Debug\net8.0-windows\Csharp_Test_Client.runtimeconfig.json
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\bin\Debug\net8.0-windows\Csharp_Test_Client.dll
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\bin\Debug\net8.0-windows\Csharp_Test_Client.pdb
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.dll
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\refint\Csharp_Test_Client.dll
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.pdb
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\Csharp_Test_Client.genruntimeconfig.cache
+D:\ServerStudy\YJStudy\IOCP\IOCPStudy\ChatClient\Csharp_Test_Client\Csharp_Test_Client\obj\Debug\net8.0-windows\ref\Csharp_Test_Client.dll

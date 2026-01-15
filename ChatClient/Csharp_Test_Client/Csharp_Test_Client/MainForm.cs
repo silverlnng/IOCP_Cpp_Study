@@ -26,6 +26,9 @@ public partial class MainForm : Form
 
     System.Windows.Forms.Timer dispatcherUITimer;
 
+    // 다중 접속 테스트용 클라이언트 리스트
+    List<ClientMultiTCP> MultiClientList = new List<ClientMultiTCP>();
+
     public MainForm()
     {
         InitializeComponent();
@@ -368,6 +371,43 @@ public partial class MainForm : Form
     private void BtnMultiConnect_Click(object sender, EventArgs e)
     {
         // 테스트 클라이언트 인원수 만큼 ClientMultiTCP 객체를 생성하고 접속 시도
+        // 1. textBoxClientNum에서 접속할 인원수 가져오기
+        int clientCount = 0;
+
+        if (int.TryParse(textBoxClientNum.Text, out clientCount) == false)
+        {
+            DevLog.Write("접속 인원수가 올바르지 않습니다.", LOG_LEVEL.ERROR); 
+            return;
+        }
+
+        // 2. 서버 주소 및 포트 정보 취득 (기존 btnConnect_Click 로직 활용) [3]
+        string address = textBoxIP.Text; 
+        if (checkBoxLocalHostIP.Checked) 
+        {
+            address = "127.0.0.1";
+        }
+        int port = Convert.ToInt32(textBoxPort.Text); 
+
+         DevLog.Write($"{clientCount}명의 클라이언트 접속 시작...", LOG_LEVEL.INFO); 
+
+        // 3. 지정된 인원수만큼 비동기 클라이언트 생성 및 접속
+        for (int i = 0; i < clientCount; i++)
+            {
+                var multiClient = new ClientMultiTCP();
+
+                // 비동기 방식으로 접속 시도
+                if (multiClient.Connect(address, port))
+                {
+                    // 접속 시도 중인 클라이언트 객체를 리스트에 보관
+                    MultiClientList.Add(multiClient);
+                }
+                else
+                {
+                    DevLog.Write($"{i + 1}번째 클라이언트 접속 실패: {multiClient.LatestErrorMsg}", LOG_LEVEL.ERROR); 
+                }
+            }
+
+        DevLog.Write($"총 {MultiClientList.Count}명의 접속 요청이 완료되었습니다.", LOG_LEVEL.INFO); 
 
     }
 
