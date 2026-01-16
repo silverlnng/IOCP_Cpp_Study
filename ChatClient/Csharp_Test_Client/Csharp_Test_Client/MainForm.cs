@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Windows.Forms;
+using System.Web;
 
 namespace Csharp_Test_Client;
 
@@ -268,9 +269,38 @@ public partial class MainForm : Form
 
     private void ProcessLog()
     {
-        // DevLog 에 로그 남기기
         // 너무 이 작업만 할 수 없으므로 일정 작업 이상을 하면 일단 패스한다.
 
+        // UI 에 출력
+        int logWorkCount = 0;
+
+        while (IsBackGroundProcessRunning)
+        {
+            System.Threading.Thread.Sleep(1);
+
+            string msg;
+
+            if (DevLog.GetLog(out msg))
+            {
+                ++logWorkCount;
+                if (listBoxLog.Items.Count > 523)
+                {
+                    listBoxLog.Items.Clear();
+                }
+
+                listBoxLog.Items.Add(msg);
+                listBoxLog.SelectedIndex = listBoxLog.Items.Count - 1;
+            }
+            else
+            {
+                break;
+            }
+
+            if (logWorkCount > 10)
+            {
+                break;
+            }
+        }
     }
 
     public void SetDisconnected()
@@ -283,6 +313,10 @@ public partial class MainForm : Form
 
         SendPacketQueue.Clear();
 
+        listBoxRoomChatMsg.Items.Clear();
+        listBoxRoomUserList.Items.Clear();
+
+        labelStatus.Text = "서버와 접속이 끊어짐";
 
     }
 
@@ -360,12 +394,12 @@ public partial class MainForm : Form
 
     void RemoveRoomUserList(Int64 userUniqueId)
     {
-
+        // TO DO
     }
 
     private void btnRoomChat_Click(object sender, EventArgs e)
     {
-
+        // TO DO
     }
 
     private void BtnMultiConnect_Click(object sender, EventArgs e)
@@ -376,39 +410,122 @@ public partial class MainForm : Form
 
         if (int.TryParse(textBoxClientNum.Text, out clientCount) == false)
         {
-            DevLog.Write("접속 인원수가 올바르지 않습니다.", LOG_LEVEL.ERROR); 
+            DevLog.Write("접속 인원수가 올바르지 않습니다.", LOG_LEVEL.ERROR);
             return;
         }
 
         // 2. 서버 주소 및 포트 정보 취득 (기존 btnConnect_Click 로직 활용) [3]
-        string address = textBoxIP.Text; 
-        if (checkBoxLocalHostIP.Checked) 
+        string address = textBoxIP.Text;
+        if (checkBoxLocalHostIP.Checked)
         {
             address = "127.0.0.1";
         }
-        int port = Convert.ToInt32(textBoxPort.Text); 
+        int port = Convert.ToInt32(textBoxPort.Text);
 
-         DevLog.Write($"{clientCount}명의 클라이언트 접속 시작...", LOG_LEVEL.INFO); 
+        DevLog.Write($"{clientCount}명의 클라이언트 접속 시작...", LOG_LEVEL.INFO);
 
         // 3. 지정된 인원수만큼 비동기 클라이언트 생성 및 접속
         for (int i = 0; i < clientCount; i++)
+        {
+            var multiClient = new ClientMultiTCP();
+
+            // 비동기 방식으로 접속 시도
+            if (multiClient.Connect(address, port))
             {
-                var multiClient = new ClientMultiTCP();
-
-                // 비동기 방식으로 접속 시도
-                if (multiClient.Connect(address, port))
-                {
-                    // 접속 시도 중인 클라이언트 객체를 리스트에 보관
-                    MultiClientList.Add(multiClient);
-                }
-                else
-                {
-                    DevLog.Write($"{i + 1}번째 클라이언트 접속 실패: {multiClient.LatestErrorMsg}", LOG_LEVEL.ERROR); 
-                }
+                // 접속 시도 중인 클라이언트 객체를 리스트에 보관
+                MultiClientList.Add(multiClient);
             }
+            else
+            {
+                DevLog.Write($"{i + 1}번째 클라이언트 접속 실패: {multiClient.LatestErrorMsg}", LOG_LEVEL.ERROR);
+            }
+        }
 
-        DevLog.Write($"총 {MultiClientList.Count}명의 접속 요청이 완료되었습니다.", LOG_LEVEL.INFO); 
+        DevLog.Write($"총 {MultiClientList.Count}명의 접속 요청이 완료되었습니다.", LOG_LEVEL.INFO);
 
     }
 
+    private void BtnMultiDisConnect_Click(object sender, EventArgs e)
+    {
+        // 1. 현재 관리 중인 다중 클라이언트 수가 0명인지 확인
+        if (MultiClientList.Count == 0)
+        {
+            DevLog.Write("종료할 다중 접속 클라이언트가 없습니다.", LOG_LEVEL.WARN);
+            return;
+        }
+
+        int disconnectedCount = 0;
+
+        try
+        {
+            // 2. 리스트를 순회하며 모든 클라이언트의 접속 종료
+            foreach (var client in MultiClientList)
+            {
+                if (client != null)
+                {
+                    // 소켓과 스트림을 닫는 Close() 메서드 호출 [1]
+                    client.Close();
+                    disconnectedCount++;
+                }
+            }
+
+            // 3. 관리 리스트 완전히 비우기
+            MultiClientList.Clear();
+
+            // 4. UI 및 로그 업데이트
+            DevLog.Write($"{disconnectedCount}명의 클라이언트 접속을 한꺼번에 종료했습니다.", LOG_LEVEL.INFO);
+
+            // 기존 소스의 SetDisconnectd 로직을 참고하여 UI 상태 반영 [2, 3]
+            labelStatus.Text = $"{DateTime.Now}. 다중 접속 종료 완료";
+        }
+        catch (Exception ex)
+        {
+            DevLog.Write($"다중 접속 종료 중 오류 발생: {ex.Message}", LOG_LEVEL.ERROR);
+        }
+    }
+
+    private void Btn_Multi_Echo_Click(object sender, EventArgs e)
+    {
+        // 1.보낼 텍스트가 있는지 확인(기존 소스 button1_Click 로직 활용)[1]
+    if (string.IsNullOrEmpty(textSendText.Text))
+        {
+            MessageBox.Show("보낼 에코 텍스트를 입력하세요");
+            return;
+        }
+
+        // 2. 다중 클라이언트 리스트가 비어있는지 확인
+        if (MultiClientList.Count == 0)
+        {
+            DevLog.Write("메시지를 보낼 클라이언트가 없습니다. 먼저 다중 접속을 수행하세요.", LOG_LEVEL.WARN);
+            return;
+        }
+
+        // 3. 에코 패킷 데이터 생성 (Packet.txt 및 mainForm.txt의 규격 준수) [2-4]
+        var body = Encoding.UTF8.GetBytes(textSendText.Text);
+        var bodyDataSize = (Int16)body.Length;
+        var packetSize = (UInt16)(bodyDataSize + PacketDef.PACKET_HEADER_SIZE); // 헤더 5바이트 포함 [2, 4]
+
+        List<byte> dataSource = new List<byte>();
+        dataSource.AddRange(BitConverter.GetBytes(packetSize));                    // 전체 크기 [1]
+        dataSource.AddRange(BitConverter.GetBytes((UInt16)PACKET_ID.DEV_ECHO));    // 패킷 ID: 1 [2, 3]
+        dataSource.AddRange(new byte[] { (byte)0 });                               // 타입 (1바이트) [3, 5]
+        dataSource.AddRange(body);                                                  // 실제 데이터 [3]
+
+        byte[] sendData = dataSource.ToArray();
+        int sendCount = 0;
+
+        // 4. 리스트의 모든 클라이언트에게 패킷 전송
+        foreach (var client in MultiClientList)
+        {
+            if (client.IsConnected())
+            {
+                // 비동기 Send 호출
+                client.Send(sendData);
+                sendCount++;
+            }
+        }
+
+        // 5. 결과 로그 남기기 [6, 7]
+        DevLog.Write($"{sendCount}명의 클라이언트가 에코 메시지를 전송했습니다: {textSendText.Text}", LOG_LEVEL.INFO);
+    }
 }

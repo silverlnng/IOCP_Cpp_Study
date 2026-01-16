@@ -39,7 +39,14 @@ namespace Csharp_Test_Client
 
     public class LoginResPacket
     {
+        public UInt16 Result;
 
+        public bool FromBytes(byte[] bodyData)
+        {
+           
+            Result = BitConverter.ToUInt16(bodyData, 0);
+            return true;
+        }
     }
 
     public class RoomEnterReqPacket
@@ -60,4 +67,20 @@ namespace Csharp_Test_Client
             return dataSource.ToArray();
         }
     }
+
+    public class RoomEnterResPacket
+    {
+        public UInt16 Result;
+        public bool FromBytes(byte[] bodyData)
+        {
+            Result = BitConverter.ToUInt16(bodyData, 0);
+            return true;
+        }
+    }
+
+    public class RoomChatReqPacket
+    {
+        
+    }
+
 }

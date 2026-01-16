@@ -132,6 +132,36 @@ namespace Csharp_Test_Client
             }
         }
 
+        // 3. 비동기 송신
+        public void Send(byte[] sendData)
+        {
+            try
+            {
+                if (IsConnected())
+                {
+                    Sock.BeginSend(sendData, 0, sendData.Length, SocketFlags.None,
+                                  new AsyncCallback(SendCallback), Sock);
+                }
+            }
+            catch (Exception ex)
+            {
+                DevLog.Write($"송신 오류: {ex.Message}", LOG_LEVEL.ERROR);
+            }
+        }
+
+        private void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                Socket client = (Socket)ar.AsyncState;
+                client.EndSend(ar);
+            }
+            catch (Exception ex)
+            {
+                DevLog.Write($"송신 완료 처리 오류: {ex.Message}", LOG_LEVEL.ERROR);
+            }
+        }
+
         public void Close()
         {
             if (Sock != null && Sock.Connected)

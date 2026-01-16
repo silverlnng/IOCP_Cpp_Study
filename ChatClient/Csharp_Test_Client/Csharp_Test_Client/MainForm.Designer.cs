@@ -57,6 +57,7 @@
             textBoxRoomNumber = new TextBox();
             listBoxLog = new ListBox();
             groupBox3 = new GroupBox();
+            Btn_Multi_Echo = new Button();
             BtnMultiLogin = new Button();
             BtnMultiDisConnect = new Button();
             BtnMultiConnect = new Button();
@@ -213,7 +214,7 @@
             // 
             labelStatus.AutoSize = true;
             labelStatus.Font = new Font("Malgun Gothic", 10F);
-            labelStatus.Location = new Point(18, 1033);
+            labelStatus.Location = new Point(667, 12);
             labelStatus.Name = "labelStatus";
             labelStatus.Size = new Size(134, 19);
             labelStatus.TabIndex = 10;
@@ -244,9 +245,9 @@
             Room.Controls.Add(btn_RoomEnter);
             Room.Controls.Add(label5);
             Room.Controls.Add(textBoxRoomNumber);
-            Room.Location = new Point(13, 465);
+            Room.Location = new Point(12, 256);
             Room.Name = "Room";
-            Room.Size = new Size(603, 396);
+            Room.Size = new Size(583, 396);
             Room.TabIndex = 12;
             Room.TabStop = false;
             Room.Text = "Room";
@@ -337,28 +338,39 @@
             // 
             listBoxLog.FormattingEnabled = true;
             listBoxLog.ItemHeight = 15;
-            listBoxLog.Location = new Point(18, 867);
+            listBoxLog.Location = new Point(667, 45);
             listBoxLog.Name = "listBoxLog";
-            listBoxLog.Size = new Size(468, 154);
+            listBoxLog.Size = new Size(468, 439);
             listBoxLog.TabIndex = 13;
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(Btn_Multi_Echo);
             groupBox3.Controls.Add(BtnMultiLogin);
             groupBox3.Controls.Add(BtnMultiDisConnect);
             groupBox3.Controls.Add(BtnMultiConnect);
             groupBox3.Controls.Add(label6);
             groupBox3.Controls.Add(textBoxClientNum);
-            groupBox3.Location = new Point(8, 244);
+            groupBox3.Location = new Point(12, 658);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(546, 215);
+            groupBox3.Size = new Size(535, 236);
             groupBox3.TabIndex = 14;
             groupBox3.TabStop = false;
             groupBox3.Text = "테스트";
             // 
+            // Btn_Multi_Echo
+            // 
+            Btn_Multi_Echo.Location = new Point(10, 116);
+            Btn_Multi_Echo.Name = "Btn_Multi_Echo";
+            Btn_Multi_Echo.Size = new Size(238, 30);
+            Btn_Multi_Echo.TabIndex = 5;
+            Btn_Multi_Echo.Text = "모든 테스트 클라이언트 에코 보내기";
+            Btn_Multi_Echo.UseVisualStyleBackColor = true;
+            Btn_Multi_Echo.Click += Btn_Multi_Echo_Click;
+            // 
             // BtnMultiLogin
             // 
-            BtnMultiLogin.Location = new Point(10, 116);
+            BtnMultiLogin.Location = new Point(10, 152);
             BtnMultiLogin.Name = "BtnMultiLogin";
             BtnMultiLogin.Size = new Size(233, 36);
             BtnMultiLogin.TabIndex = 4;
@@ -373,6 +385,7 @@
             BtnMultiDisConnect.TabIndex = 3;
             BtnMultiDisConnect.Text = "모든 테스트 클라이언트 접속 종료하기";
             BtnMultiDisConnect.UseVisualStyleBackColor = true;
+            BtnMultiDisConnect.Click += BtnMultiDisConnect_Click;
             // 
             // BtnMultiConnect
             // 
@@ -404,7 +417,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(620, 1061);
+            ClientSize = new Size(1168, 1061);
             Controls.Add(groupBox3);
             Controls.Add(listBoxLog);
             Controls.Add(Room);
@@ -466,5 +479,6 @@
         private ListBox listBoxRoomChatMsg;
         private Button btnRoomChat;
         private TextBox textBoxRoomSendMsg;
+        private Button Btn_Multi_Echo;
     }
 }
