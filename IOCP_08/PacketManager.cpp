@@ -204,9 +204,8 @@ void PacketManager::ProcessUserConnect(UINT32 clientIndex_, UINT16 packetSize_, 
 
 void PacketManager::ProcessUserDisConnect(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
 {
-	printf("[ProcessUserDisConnect] clientIndex : %d\n", clientIndex_)
+	printf("[ProcessUserDisConnect] clientIndex : %d\n", clientIndex_);
 
-	
 }
 
 
@@ -328,7 +327,7 @@ void PacketManager::ProcessEnterRoom(UINT32 clientIndex_, UINT16 packetSize_, ch
 
 	roomEnterResPacket.PacketLengeh = sizeof(ROOM_ENTER_RESPONSE_PACKET);
 
-	roomEnterResPacket.Result = mRoomManager
+	//roomEnterResPacket.Result = mRoomManager
 
 }
 

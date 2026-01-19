@@ -20,6 +20,7 @@
     <ClInclude Include="RedisTaskDefine.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomManager.h" />
+    <ClInclude Include="MySQLManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PacketManager.cpp" />

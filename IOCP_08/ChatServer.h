@@ -3,6 +3,7 @@
 #include "IOCPServer.h"
 #include "Packet.h"
 #include "PacketManager.h"
+#include "MySQLManager.h"
 
 class ChatServer : public IOCPServer 
 {
@@ -52,6 +53,9 @@ public:
 		m_pPacketManager->Init(maxClient);
 		m_pPacketManager->Run();
 		
+		m_MySQLManager = std::make_unique<MySQLManager>();
+		m_MySQLManager->Run();
+
 		StartServer(maxClient);
 	}
 
@@ -64,5 +68,6 @@ public:
 private:
 
 	std::unique_ptr<PacketManager> m_pPacketManager;
+	std::unique_ptr<MySQLManager> m_MySQLManager;
 };
 
