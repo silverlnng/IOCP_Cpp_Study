@@ -53,6 +53,8 @@ bool PacketManager::Run()
 
 void PacketManager::End()
 {
+	mRedisManager->End();
+
 	mIsRunProcessThread = false;
 
 	if (mProcessThread.joinable())

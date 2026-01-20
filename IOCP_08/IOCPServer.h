@@ -234,6 +234,7 @@ private:
 
 		while (mIsWorkerRun)
 		{
+			// GetQueuedCompletionStatus 의 INFINITE 옵션 으로 폴링방식의 대기가 아니라 , 이벤트 기반의 대기 
 			bSuccess = GetQueuedCompletionStatus(
 				mIOCPHandle,
 				&dwIoSize,

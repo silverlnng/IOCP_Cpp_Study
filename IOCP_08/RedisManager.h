@@ -6,6 +6,7 @@
 #include <deque>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 
 class RedisManager
 {
@@ -31,10 +32,29 @@ public:
 		return true;
 	}
 
+	void End()
+	{
+		mIsTaskRun = false;
+		// [추가] 모든 대기 중인 스레드를 깨움
+		mTaskCond.notify_all();
+		for (auto& thread : mTaskThreads)
+		{
+			if (thread.joinable())
+			{
+				thread.join();
+			}
+		}
+		printf("Redis thread 종료 \n");
+	}
+
 	void PushTask(RedisTask task_)
 	{
-		std::lock_guard<std::mutex> guard(mReqLock);
-		mRequestTask.push_back(task_);
+		// [수정] PushTask: 데이터를 넣고 스레드를 깨움 (Producer)
+		{
+			std::lock_guard<std::mutex> guard(mReqLock);
+			mRequestTask.push_back(task_);
+		}
+		mTaskCond.notify_one(); // [추가] 대기 중인 스레드 하나를 깨움
 	}
 
 	// Packet Manager 의 ProcessThread 에서 계속 확인하고 작동 중
@@ -72,68 +92,77 @@ private:
 	{
 		printf(" Redis 의 스레드 시작 \n");
 
+		// TODO : 대기 방식을 폴링방식에서 이벤트 기반으로 수정하기 
+		// Sleep for 대신 wait 사용
+
+
+
 		while (mIsTaskRun)
 		{
-			bool isIdle = true;
-
 			
-			if (auto task = TakeRequestTask(); task.TaskID !=RedisTaskID::INVALID)
+			RedisTask task;
+
+			// [블록 시작] 락을 걸고 조건 검사
 			{
-				isIdle = false;
+				std::unique_lock<std::mutex> lock(mReqLock); // wait을 쓰려면 unique_lock 필요
 
-				// 작업 종류에 따라서 처리하기
+				// 큐가 비어있으면 깨울 때까지 잠듦 (Spurious Wakeup 방지)
+				mTaskCond.wait(lock, [this]() {
+					return !mIsTaskRun || !mRequestTask.empty();
+					});
 
-				// 로그인 요청 처리
-				if (task.TaskID == RedisTaskID::REQUEST_LOGIN)
+				if (!mIsTaskRun) break;
+
+				// 데이터 꺼내기
+				task = mRequestTask.front();
+				mRequestTask.pop_front();
+			} // [블록 끝] 여기서 락 해제. 데이터 처리는 락 없이 진행
+
+			// 작업 종류에 따라서 처리하기
+
+			// 로그인 요청 처리
+			if (task.TaskID == RedisTaskID::REQUEST_LOGIN)
+			{
+				auto pRequest = (RedisLoginReq*)task.pData;
+
+				RedisLoginRes bodyData;
+
+				bodyData.Result = (UINT16)ERROR_CODE::LOGIN_USER_INVALID_PW;
+
+				std::string value;
+				if (mConn.get(pRequest->UserID, value))
 				{
-					auto pRequest = (RedisLoginReq*)task.pData;
+					// Redis 서버 조회를 통해서 , 서버에 해당 유저의 ID 가 있으면, 저장되어있던 비밀번호를 value 변수 안에 채워넣는 것 
 
-					RedisLoginRes bodyData;
-
-					bodyData.Result = (UINT16)ERROR_CODE::LOGIN_USER_INVALID_PW;
-
-					std::string value;
-					if (mConn.get(pRequest->UserID,value))
+					if (value.compare(pRequest->UserPW) == 0)
 					{
-						// Redis 서버 조회를 통해서 , 서버에 해당 유저의 ID 가 있으면, 저장되어있던 비밀번호를 value 변수 안에 채워넣는 것 
-
-						if (value.compare(pRequest->UserPW) ==0)
-						{
-							// DB 값 과 입력값 비교 . 
-							// 동일할때만 ERROR_CODE::NONE으로 변경
-							bodyData.Result = (UINT16)ERROR_CODE::NONE;
-						}
-
+						// DB 값 과 입력값 비교 . 
+						// 동일할때만 ERROR_CODE::NONE으로 변경
+						bodyData.Result = (UINT16)ERROR_CODE::NONE;
 					}
-
-					RedisTask resTask;
-
-					// 이번에는 작업종류를 RESPONSE_LOGIN 으로 변경하고
-					// mResponseTask 에 넣음 = > 그럼 PacketManager 쪽 의 thread 에서 검사하고 가져가서 처리함
-					
-					resTask.UserIndex = task.UserIndex;
-					resTask.TaskID = RedisTaskID::RESPONSE_LOGIN;
-					resTask.DataSize = sizeof(RedisLoginRes);
-					resTask.pData = new char[resTask.DataSize];
-
-					CopyMemory(resTask.pData, (char*)&bodyData, resTask.DataSize);
-					
-					PushResponse(resTask);
 
 				}
 
-				task.Release();
+				RedisTask resTask;
+
+				// 이번에는 작업종류를 RESPONSE_LOGIN 으로 변경하고
+				// mResponseTask 에 넣음 = > 그럼 PacketManager 쪽 의 thread 에서 검사하고 가져가서 처리함
+
+				resTask.UserIndex = task.UserIndex;
+				resTask.TaskID = RedisTaskID::RESPONSE_LOGIN;
+				resTask.DataSize = sizeof(RedisLoginRes);
+				resTask.pData = new char[resTask.DataSize];
+
+				CopyMemory(resTask.pData, (char*)&bodyData, resTask.DataSize);
+
+				PushResponse(resTask);
+
 			}
 
-			if (isIdle)
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
-			}
-
+			task.Release();
 		}
 
 		printf(" Redis 의 스레드 종료 \n");
-
 	}
 
 	RedisTask TakeRequestTask()
@@ -170,5 +199,8 @@ private:
 
 	std::mutex mResLock;
 	std::deque<RedisTask> mResponseTask;
+
+	// [추가] 조건 변수 선언
+	std::condition_variable mTaskCond;
 };
 
