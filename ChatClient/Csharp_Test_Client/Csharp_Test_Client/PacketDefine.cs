@@ -17,7 +17,7 @@ namespace Csharp_Test_Client
 
     public enum PACKET_ID : ushort
     {
-        DEV_ECHO = 1,
+        DEV_ECHO = 101,
 
         // 로그인
         LOGIN_REQ = 201,
@@ -38,5 +38,14 @@ namespace Csharp_Test_Client
         ROOM_CHAT_RES=222,
         ROOM_CHAT_NOTIFY=223,
 
+    }
+
+    public enum  ERROR_CODE : Int16
+    {
+        ERROR_NONE =0,
+
+        ERROR_CODE_USER_MGR_INVALID_USER_UNIQUEID =112,
+        ERROR_CODE_PUBLIC_CHANNEL_IN_USER = 114,
+        ERROR_CODE_PUBLIC_CHANNEL_INVALIDE_NUMBER = 115,
     }
 }

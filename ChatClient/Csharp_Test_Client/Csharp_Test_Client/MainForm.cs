@@ -209,11 +209,13 @@ public partial class MainForm : Form
         }
     }
 
+    // 스레드에 의해서 실행되는 함수
+
     void NetworkSendProcess()
     {
         while (IsNetworkThreadRunning)
         {
-            System.Threading.Thread.Sleep(1);
+            //System.Threading.Thread.Sleep(1);
 
             // 연결확인 
             if (Network.IsConnected() == false)
@@ -229,6 +231,10 @@ public partial class MainForm : Form
                 {
                     var packet = SendPacketQueue.Dequeue();
                     Network.Send(packet);
+                }
+                if (SendPacketQueue.Count > 10000)
+                {
+                    System.Threading.Thread.Sleep(10);
                 }
             }
 
@@ -487,7 +493,7 @@ public partial class MainForm : Form
     private void Btn_Multi_Echo_Click(object sender, EventArgs e)
     {
         // 1.보낼 텍스트가 있는지 확인(기존 소스 button1_Click 로직 활용)[1]
-    if (string.IsNullOrEmpty(textSendText.Text))
+        if (string.IsNullOrEmpty(textSendText.Text))
         {
             MessageBox.Show("보낼 에코 텍스트를 입력하세요");
             return;
@@ -527,5 +533,57 @@ public partial class MainForm : Form
 
         // 5. 결과 로그 남기기 [6, 7]
         DevLog.Write($"{sendCount}명의 클라이언트가 에코 메시지를 전송했습니다: {textSendText.Text}", LOG_LEVEL.INFO);
+    }
+
+    private void btnMultiChat_Click(object sender, EventArgs e)
+    {
+        // 1.보낼 채팅 메시지가 있는지 확인(기존 btnRoomChat_Click 로직 참조 [1])
+    if (string.IsNullOrEmpty(textBoxRoomSendMsg.Text))
+        {
+            MessageBox.Show("채팅 메시지를 입력하세요");
+            return;
+        }
+
+        // 2. 전송할 다중 클라이언트가 있는지 확인
+        if (MultiClientList.Count == 0)
+        {
+            DevLog.Write("채팅을 보낼 클라이언트가 없습니다. 먼저 다중 접속을 수행하세요.", LOG_LEVEL.WARN);
+            return;
+        }
+
+        // 3. 채팅 요청 패킷 생성 (Packet.txt [2] 참조)
+        // 모든 클라이언트가 동일한 메시지를 보내므로 루프 밖에서 한 번만 생성합니다.
+        var chatReq = new RoomChatReqPacket();
+        chatReq.SetValue(textBoxRoomSendMsg.Text);
+        byte[] bodyData = chatReq.ToBytes();
+
+        // 4. 패킷 헤더 + 바디 직렬화 (mainForm.txt PostSendPacket 로직 참조 [3]-[4])
+        // 패킷 구조: [TotalSize(2)][PacketID(2)][Type(1)][BodyData(...)]
+        List<byte> dataSource = new List<byte>();
+
+        // 전체 크기 = 바디 크기 + 헤더 크기(5)
+        UInt16 packetSize = (UInt16)(bodyData.Length + PacketDef.PACKET_HEADER_SIZE);
+
+        dataSource.AddRange(BitConverter.GetBytes(packetSize));
+        dataSource.AddRange(BitConverter.GetBytes((UInt16)PACKET_ID.ROOM_CHAT_REQ)); // ID: 221 [5]
+        dataSource.AddRange(new byte[] { (byte)0 }); // Type
+        dataSource.AddRange(bodyData);
+
+        byte[] sendPacket = dataSource.ToArray();
+        int sendCount = 0;
+
+        // 5. 리스트의 모든 클라이언트에게 전송
+        foreach (var client in MultiClientList)
+        {
+            // ClientMultiTcp 클래스의 IsConnected와 Send 메서드 사용 (대화 기록 기반)
+            if (client.IsConnected())
+            {
+                client.Send(sendPacket);
+                sendCount++;
+            }
+        }
+
+        // 6. 결과 로그 기록
+        DevLog.Write($"{sendCount}명의 클라이언트가 채팅 패킷을 전송했습니다: {textBoxRoomSendMsg.Text}", LOG_LEVEL.INFO);
     }
 }

@@ -49,6 +49,8 @@ private:
 
 	void ProcessUserDisConnect(UINT32 clientIndex_,UINT16 packetSize_,char* pPacket_);
 
+	void ProcessDevEcho(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);
+
 	void ProcessLogin(UINT32 clientIndex_,UINT16 packetSize_,char* pPacket_);
 
 	void ProcessLoginDBResult(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);

@@ -80,7 +80,31 @@ namespace Csharp_Test_Client
 
     public class RoomChatReqPacket
     {
-        
+        byte[] Msg = new byte[PacketDef.MAX_CHAT_MSG_SIZE];
+
+        public void SetValue(string msg)
+        {
+            Encoding.UTF8.GetBytes(msg).CopyTo(Msg, 0);
+        }
+
+        public byte[] ToBytes()
+        {
+            List<byte> dataSource = new List<byte>();
+            dataSource.AddRange(Msg);
+            return dataSource.ToArray();
+        }
+
+    }
+
+    public class RoomChatResPacket
+    {
+        public UInt16 Result;
+        public bool FromBytes(byte[] bodyData)
+        {
+           
+            Result = BitConverter.ToUInt16(bodyData, 0);
+            return true;
+        }
     }
 
 }

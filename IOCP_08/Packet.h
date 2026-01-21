@@ -23,6 +23,9 @@ enum class PACKET_ID : UINT16
 	SYS_USER_DISCONNECT =12,
 	SYS_END=30,
 
+	// 俊内皋技瘤 贸府
+	DEV_ECHO_REQUEST =101,
+
 	//DB 
 	DB_END =199,
 

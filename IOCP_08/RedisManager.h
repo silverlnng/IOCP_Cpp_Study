@@ -95,11 +95,8 @@ private:
 		// TODO : 대기 방식을 폴링방식에서 이벤트 기반으로 수정하기 
 		// Sleep for 대신 wait 사용
 
-
-
 		while (mIsTaskRun)
 		{
-			
 			RedisTask task;
 
 			// [블록 시작] 락을 걸고 조건 검사

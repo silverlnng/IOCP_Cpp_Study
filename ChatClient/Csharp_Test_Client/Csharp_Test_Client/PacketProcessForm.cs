@@ -42,7 +42,31 @@ namespace Csharp_Test_Client
 
         }
 
+        void PacketProcess_RoomChatResponse(byte[] bodyData)
+        {
+            var resPacket = new RoomChatResPacket();
+            resPacket.FromBytes(bodyData);
 
+            var errorCode = (ERROR_CODE)resPacket.Result;
+
+            var msg = $"방 채팅 요청 결과: {(ERROR_CODE)resPacket.Result}";
+
+            if(errorCode== ERROR_CODE.ERROR_NONE)
+            {
+                DevLog.Write(msg, LOG_LEVEL.ERROR);
+            }
+            else
+            {
+                
+            }
+
+
+        }
+
+        void AddRoomChatMessageList(string userID, string msg)
+        {
+
+        }
 
     }
 }

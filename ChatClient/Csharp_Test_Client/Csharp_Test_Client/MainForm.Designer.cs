@@ -57,6 +57,7 @@
             textBoxRoomNumber = new TextBox();
             listBoxLog = new ListBox();
             groupBox3 = new GroupBox();
+            btnMultiChat = new Button();
             Btn_Multi_Echo = new Button();
             BtnMultiLogin = new Button();
             BtnMultiDisConnect = new Button();
@@ -340,11 +341,12 @@
             listBoxLog.ItemHeight = 15;
             listBoxLog.Location = new Point(667, 45);
             listBoxLog.Name = "listBoxLog";
-            listBoxLog.Size = new Size(468, 439);
+            listBoxLog.Size = new Size(594, 439);
             listBoxLog.TabIndex = 13;
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(btnMultiChat);
             groupBox3.Controls.Add(Btn_Multi_Echo);
             groupBox3.Controls.Add(BtnMultiLogin);
             groupBox3.Controls.Add(BtnMultiDisConnect);
@@ -353,10 +355,20 @@
             groupBox3.Controls.Add(textBoxClientNum);
             groupBox3.Location = new Point(12, 658);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(535, 236);
+            groupBox3.Size = new Size(535, 267);
             groupBox3.TabIndex = 14;
             groupBox3.TabStop = false;
             groupBox3.Text = "테스트";
+            // 
+            // btnMultiChat
+            // 
+            btnMultiChat.Location = new Point(14, 206);
+            btnMultiChat.Name = "btnMultiChat";
+            btnMultiChat.Size = new Size(264, 41);
+            btnMultiChat.TabIndex = 6;
+            btnMultiChat.Text = "모든 테스트 클라이언트 Chat 메세지 보내기";
+            btnMultiChat.UseVisualStyleBackColor = true;
+            btnMultiChat.Click += btnMultiChat_Click;
             // 
             // Btn_Multi_Echo
             // 
@@ -417,7 +429,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1168, 1061);
+            ClientSize = new Size(1285, 1061);
             Controls.Add(groupBox3);
             Controls.Add(listBoxLog);
             Controls.Add(Room);
@@ -480,5 +492,6 @@
         private Button btnRoomChat;
         private TextBox textBoxRoomSendMsg;
         private Button Btn_Multi_Echo;
+        private Button btnMultiChat;
     }
 }

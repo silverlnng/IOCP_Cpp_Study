@@ -1,4 +1,6 @@
 #include <utility>
+#include <chrono>
+#include <fstream>
 
 #include "UserManager.h"
 #include "PacketManager.h"
@@ -12,6 +14,9 @@ void PacketManager::Init(const UINT32 maxClient_)
 
 	mRecvFuntionalDictionary[(int)PACKET_ID::SYS_USER_CONNECT] = &PacketManager::ProcessUserConnect;
 	mRecvFuntionalDictionary[(int)PACKET_ID::SYS_USER_DISCONNECT] = &PacketManager::ProcessUserDisConnect;
+	
+	mRecvFuntionalDictionary[(int)PACKET_ID::DEV_ECHO_REQUEST] = &PacketManager::ProcessDevEcho;
+
 
 	mRecvFuntionalDictionary[(int)PACKET_ID::LOGIN_REQUEST] = &PacketManager::ProcessLogin;
 	mRecvFuntionalDictionary[(int)RedisTaskID::RESPONSE_LOGIN] = &PacketManager::ProcessLoginDBResult;
@@ -80,12 +85,26 @@ void PacketManager::ReceivePacketData(const UINT32 clientIndex_, const UINT size
 	EnqueuePacketData(clientIndex_);
 }
 
-
-// 패킷이 들어오는걸 검사하고 , 처리하는 스레드
-
+// 스레드에서 작동하는 함수
+// 패킷이 들어오는걸 검사하고 , 처리
 void PacketManager::ProcessPacket()
 {
-	
+	// 시간 측정을 위한 변수 선언
+	auto startTime = std::chrono::high_resolution_clock::now();
+	int packetCount = 0;
+	int totalPacketCount = 0;
+	int totalElapsedSec = 0;
+
+	// [추가] CSV 파일 열기 (덮어쓰기 모드)
+	// Lock-Free 테스트 시에는 파일명을 "tps_log_lockfree.csv"로 변경하세요.
+	std::ofstream tpsFile("tps_log_lock_based.csv");
+
+	// [추가] CSV 헤더 작성 (엑셀에서 X축, Y축 인식용)
+	if (tpsFile.is_open())
+	{
+		tpsFile << "Time(Sec),TPS,TotalPacketCount" << std::endl;
+	}
+
 	while (mIsRunProcessThread)
 	{
 		bool  isIdle = true;
@@ -96,6 +115,7 @@ void PacketManager::ProcessPacket()
 			isIdle = false;
 
 			ProcessRecvPacket(packetData.ClientIndex, packetData.PacketId, packetData.DataSize, packetData.pDataPtr);
+			packetCount++; // 처리 횟수 증가
 		}
 
 		if (auto packetData = DequeSystemPacketData(); packetData.PacketId!=0)
@@ -103,6 +123,7 @@ void PacketManager::ProcessPacket()
 			isIdle = false;
 
 			ProcessRecvPacket(packetData.ClientIndex, packetData.PacketId, packetData.DataSize, packetData.pDataPtr);
+			packetCount++; // 처리 횟수 증가
 		}
 
 		// Redis 의 응답 Task 확인하고 가져오기 추가
@@ -113,6 +134,27 @@ void PacketManager::ProcessPacket()
 			ProcessRecvPacket(task.UserIndex, (UINT16)task.TaskID, task.DataSize, task.pData);
 
 			task.Release();
+		}
+
+		// TPS 출력 로직
+		auto endTime = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> elapsed = endTime - startTime;
+		if (elapsed.count() >= 1.0) // 1초가 지났다면
+		{
+			totalElapsedSec++; // 경과 시간 증가
+			totalPacketCount += packetCount;
+			// 콘솔 출력 (실시간 확인용)
+			printf("[TPS Measure] Time: %d sec, TPS: %d\n", totalElapsedSec, packetCount);
+
+			// 파일 출력 (포트폴리오 그래프용)
+			if (tpsFile.is_open())
+			{
+				// 형식: 시간,처리량
+				tpsFile << totalElapsedSec << "," << packetCount<<","<< totalPacketCount<< std::endl;
+			}
+
+			packetCount = 0; // 카운터 초기화
+			startTime = std::chrono::high_resolution_clock::now(); // 시간 초기화
 		}
 
 
@@ -210,6 +252,16 @@ void PacketManager::ProcessUserDisConnect(UINT32 clientIndex_, UINT16 packetSize
 
 }
 
+void PacketManager::ProcessDevEcho(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
+{
+	// TPS 측정용이므로 단순히 아무 작업도 안 하거나,
+	// 클라이언트에 다시 응답을 보내주려면 아래와 같이 작성 (부하 테스트시에는 생략 가능)
+
+	
+	// 예: 받은 그대로 다시 전송 (Echo)
+	SendPacketFunc(clientIndex_, packetSize_, pPacket_);
+	
+}
 
 void PacketManager::ProcessLogin(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
 {
