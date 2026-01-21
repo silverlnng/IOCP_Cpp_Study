@@ -144,7 +144,7 @@ void PacketManager::ProcessPacket()
 			totalElapsedSec++; // 경과 시간 증가
 			totalPacketCount += packetCount;
 			// 콘솔 출력 (실시간 확인용)
-			printf("[TPS Measure] Time: %d sec, TPS: %d\n", totalElapsedSec, packetCount);
+			printf("[TPS Measure] Time: %d sec, TPS: %d ,total TPS: %d \n", totalElapsedSec, packetCount, totalPacketCount);
 
 			// 파일 출력 (포트폴리오 그래프용)
 			if (tpsFile.is_open())

@@ -220,22 +220,31 @@ public partial class MainForm : Form
             // 연결확인 
             if (Network.IsConnected() == false)
             {
+                System.Threading.Thread.Sleep(10);
                 continue;
             }
 
             // C# 에서 lock 문은 블록이 끝날때 자동을 잠금을 해체
+            byte[] packet = null;
 
             lock (SendPacketQueue)
             {
                 if (SendPacketQueue.Count > 0)
                 {
-                    var packet = SendPacketQueue.Dequeue();
-                    Network.Send(packet);
+                    packet = (byte[])SendPacketQueue.Dequeue();
                 }
-                if (SendPacketQueue.Count > 10000)
-                {
-                    System.Threading.Thread.Sleep(10);
-                }
+            }
+
+            // 2. Lock 밖에서 전송 (IO 지연이 다른 스레드를 방해하지 않음)
+            if (packet != null)
+            {
+                Network.Send(packet);
+                // 패킷을 보냈다면 쉬지 않고 즉시 다음 루프로 진입하여 처리 속도 극대화
+            }
+            else
+            {
+                // 3. 보낼 데이터가 없을 때만 CPU 휴식 (Spin Lock 방지)
+                System.Threading.Thread.Sleep(1);
             }
 
         }
@@ -428,27 +437,27 @@ public partial class MainForm : Form
         }
         int port = Convert.ToInt32(textBoxPort.Text);
 
-        DevLog.Write($"{clientCount}명의 클라이언트 접속 시작...", LOG_LEVEL.INFO);
+        //DevLog.Write($"{clientCount}명의 클라이언트 접속 시작...", LOG_LEVEL.INFO);
 
-        // 3. 지정된 인원수만큼 비동기 클라이언트 생성 및 접속
-        for (int i = 0; i < clientCount; i++)
+        // 별도 스레드에서 병렬 처리
+        Task.Run(() =>
         {
-            var multiClient = new ClientMultiTCP();
-
-            // 비동기 방식으로 접속 시도
-            if (multiClient.Connect(address, port))
+            //Parallel.For 으로 작업량을 나누어서 여러 스레드에서 동시에 접속 시도
+            Parallel.For(0, clientCount, i =>
             {
-                // 접속 시도 중인 클라이언트 객체를 리스트에 보관
-                MultiClientList.Add(multiClient);
-            }
-            else
-            {
-                DevLog.Write($"{i + 1}번째 클라이언트 접속 실패: {multiClient.LatestErrorMsg}", LOG_LEVEL.ERROR);
-            }
-        }
+                var multiClient = new ClientMultiTCP();
+                if (multiClient.Connect(address, port))
+                {
+                    lock (MultiClientList) // 리스트 접근 시 동기화 필요
+                    {
+                        MultiClientList.Add(multiClient);
+                    }
+                }
+            });
 
-        DevLog.Write($"총 {MultiClientList.Count}명의 접속 요청이 완료되었습니다.", LOG_LEVEL.INFO);
+            DevLog.Write($"총 {MultiClientList.Count}명의 접속 요청이 완료되었습니다.", LOG_LEVEL.INFO);
 
+        });
     }
 
     private void BtnMultiDisConnect_Click(object sender, EventArgs e)

@@ -35,6 +35,9 @@ namespace Csharp_Test_Client
 
                 Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+                // [추가] Nagle 알고리즘 비활성화 (즉시 전송)
+                Sock.NoDelay = true;
+
                 // 비동기 연결 시도
                 Sock.BeginConnect(new IPEndPoint(serverIP, port), new AsyncCallback(ConnectCallback), Sock);
                 return true;
@@ -56,7 +59,7 @@ namespace Csharp_Test_Client
 
                 if (client.Connected)
                 {
-                    DevLog.Write("서버 접속 성공 (비동기)", LOG_LEVEL.INFO);
+                    //DevLog.Write("서버 접속 성공 (비동기)", LOG_LEVEL.INFO);
                     // 접속 성공 즉시 비동기 수신 시작
                     StartReceive();
                 }
