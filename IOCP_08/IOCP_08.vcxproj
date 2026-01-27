@@ -139,6 +139,7 @@
     <ClInclude Include="ErrorCode.h" />
     <ClInclude Include="IOCPServer.h" />
     <ClInclude Include="MySQLManager.h" />
+    <ClInclude Include="MySQLTaskDefine.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketManager.h" />
     <ClInclude Include="RedisManager.h" />

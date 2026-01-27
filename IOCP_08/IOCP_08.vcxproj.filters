@@ -21,6 +21,7 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomManager.h" />
     <ClInclude Include="MySQLManager.h" />
+    <ClInclude Include="MySQLTaskDefine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PacketManager.cpp" />

@@ -11,6 +11,7 @@
 class UserManager;
 class RedisManager;
 class RoomManager;
+class MySQLManager;
 
 class PacketManager
 {
@@ -72,6 +73,7 @@ private:
 	UserManager* mUserManager;
 	RedisManager* mRedisManager;
 	RoomManager* mRoomManager;
+	MySQLManager* mMySQLManager;
 
 	std::function<void(int, char*)> mSendMQDataFunc;
 

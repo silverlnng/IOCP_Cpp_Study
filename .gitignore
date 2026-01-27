@@ -404,3 +404,6 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
 IOCP_08/.vs/IOCP_08/v17/ipch
+IOCP_04_/.vs/IOCP_04_/v17/ipch
+ChatClient/.vs/ChatClient/v17/ipch
+

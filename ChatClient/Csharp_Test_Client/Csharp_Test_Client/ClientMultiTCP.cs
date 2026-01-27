@@ -170,6 +170,9 @@ namespace Csharp_Test_Client
             if (Sock != null && Sock.Connected)
             {
                 //Sock.Shutdown(SocketShutdown.Both);
+
+                // 비동기 수신처리도 종료하기 
+
                 Sock.Close();
             }
         }

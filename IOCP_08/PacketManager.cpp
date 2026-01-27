@@ -5,6 +5,7 @@
 #include "UserManager.h"
 #include "PacketManager.h"
 #include "RedisManager.h"
+#include "MySQLManager.h"
 
 void PacketManager::Init(const UINT32 maxClient_)
 {
@@ -29,6 +30,7 @@ void PacketManager::Init(const UINT32 maxClient_)
 	CreateComponent(maxClient_);
 
 	mRedisManager = new RedisManager;
+	mMySQLManager = new MySQLManager;
 }
 
 void PacketManager::CreateComponent(const UINT32 maxClient_)
@@ -46,7 +48,13 @@ bool PacketManager::Run()
 	// Redis 서버와의 연결하기
 	if (mRedisManager->Run("127.0.0.1",6379,1)==false)
 	{
-		return false;	
+		//return false;	
+	}
+
+	// MySQL 서버와의 연결하기
+	if(mMySQLManager->Run("tcp://127.0.0.1:3306", "root", "1234",1)==false)
+	{
+		//return false;
 	}
 
 
@@ -315,17 +323,29 @@ void PacketManager::ProcessLogin(UINT32 clientIndex_, UINT16 packetSize_, char* 
 		// RedisTask 생성
 		// RedisTask 에 로그인 요청 정보 채우기
 
-		RedisTask task;
+		// TODO : MySQL 으로 변경해주기
+
+		MySQLTask task;
 		task.UserIndex = clientIndex_;
-		task.TaskID = RedisTaskID::REQUEST_LOGIN;
+		task.TaskID = MySQLTaskID::REQUEST_LOGIN;
 		task.DataSize = sizeof(RedisLoginReq);
 		task.pData = new char[task.DataSize];
 
 		CopyMemory(task.pData, (char*) & dbReq, task.DataSize);
 
-		mRedisManager->PushTask(task);
+		mMySQLManager->PushTask(task);
 
 		printf("[PacketManager::ProcessLogin] Redis Login Request PushTask UserID : %s \n", pUserID);
+
+		// [추가] MySQL 응답 큐 확인
+		//if (auto task = mMysqlManager->TakeResponseTask(); task.TaskID != MySQLTaskID::INVALID)
+		//{
+		//	isIdle = false;
+		//	// 결과 처리 함수 호출 (ProcessLoginDBResult 재사용 가능)
+		//	ProcessLoginDBResult(task.UserIndex, (UINT16)task.TaskID, task.DataSize, task.pData);
+
+		//	task.Release();
+		//}
 
 	}
 	else

@@ -46,8 +46,7 @@
               "RelativeToolTip": "Packet.h",
               "ViewState": "AgIAAAwAAAAAAAAAAAAkwBMAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-12-17T08:31:08.024Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-17T08:31:08.024Z"
             },
             {
               "$type": "Document",
@@ -59,8 +58,7 @@
               "RelativeToolTip": "Define.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-12-17T01:16:45.415Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-17T01:16:45.415Z"
             },
             {
               "$type": "Document",
@@ -97,8 +95,7 @@
               "RelativeToolTip": "EchoServer.h",
               "ViewState": "AgIAAAUAAAAAAAAAAAAAABQAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-12-17T00:54:32.114Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-17T00:54:32.114Z"
             },
             {
               "$type": "Document",
@@ -111,6 +108,16 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-12-17T00:54:02.391Z"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 91,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             }
           ]
         }

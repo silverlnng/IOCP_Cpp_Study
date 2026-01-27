@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Windows.Forms;
+using System.Net;
+using System.Text;
 using System.Web;
+using System.Windows.Forms;
 
 namespace Csharp_Test_Client;
 
@@ -457,6 +458,8 @@ public partial class MainForm : Form
 
             DevLog.Write($"총 {MultiClientList.Count}명의 접속 요청이 완료되었습니다.", LOG_LEVEL.INFO);
 
+            // TODO : 접속다되면 바로 에코메세지 보내기
+
         });
     }
 
@@ -501,12 +504,18 @@ public partial class MainForm : Form
 
     private void Btn_Multi_Echo_Click(object sender, EventArgs e)
     {
+       
         // 1.보낼 텍스트가 있는지 확인(기존 소스 button1_Click 로직 활용)[1]
-        if (string.IsNullOrEmpty(textSendText.Text))
+        /*if (string.IsNullOrEmpty(textSendText.Text))
         {
             MessageBox.Show("보낼 에코 텍스트를 입력하세요");
             return;
-        }
+        }*/
+
+
+        // [수정 후] 현재 시간(Ticks, 8바이트 정수)을 보냄
+        long currentTicks = DateTime.Now.Ticks;
+        byte[] body = BitConverter.GetBytes(currentTicks);
 
         // 2. 다중 클라이언트 리스트가 비어있는지 확인
         if (MultiClientList.Count == 0)
@@ -514,9 +523,10 @@ public partial class MainForm : Form
             DevLog.Write("메시지를 보낼 클라이언트가 없습니다. 먼저 다중 접속을 수행하세요.", LOG_LEVEL.WARN);
             return;
         }
-
+     
         // 3. 에코 패킷 데이터 생성 (Packet.txt 및 mainForm.txt의 규격 준수) [2-4]
-        var body = Encoding.UTF8.GetBytes(textSendText.Text);
+        //var body = Encoding.UTF8.GetBytes(textSendText.Text);
+
         var bodyDataSize = (Int16)body.Length;
         var packetSize = (UInt16)(bodyDataSize + PacketDef.PACKET_HEADER_SIZE); // 헤더 5바이트 포함 [2, 4]
 
@@ -547,7 +557,7 @@ public partial class MainForm : Form
     private void btnMultiChat_Click(object sender, EventArgs e)
     {
         // 1.보낼 채팅 메시지가 있는지 확인(기존 btnRoomChat_Click 로직 참조 [1])
-    if (string.IsNullOrEmpty(textBoxRoomSendMsg.Text))
+        if (string.IsNullOrEmpty(textBoxRoomSendMsg.Text))
         {
             MessageBox.Show("채팅 메시지를 입력하세요");
             return;

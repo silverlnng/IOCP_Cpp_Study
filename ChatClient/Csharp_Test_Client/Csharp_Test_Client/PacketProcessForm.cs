@@ -34,7 +34,43 @@ namespace Csharp_Test_Client
 
         void PacketProcess_DevEcho(byte[] bodyData)
         {
+            // [수정 전] 문자열 출력
+            //DevLog.Write($"Echo:  {Encoding.UTF8.GetString(bodyData)}");
 
+            // [수정 후] 타임스탬프 계산 및 Latency 출력
+            try
+            {
+                // 1. Body 데이터 길이가 8바이트(Int64)인지 확인 (방어 코드)
+                if (bodyData.Length >= 8)
+                {
+                    // 2. 패킷에 담겨 있던 '보낸 시간' 꺼내기
+                    long sendTicks = BitConverter.ToInt64(bodyData, 0);
+
+                    // 3. '현재 시간' 구하기
+                    long currentTicks = DateTime.Now.Ticks;
+
+                    // 4. 차이 계산 (10,000 Ticks = 1ms)
+                    TimeSpan elapsedSpan = new TimeSpan(currentTicks - sendTicks);
+                    double latencyMs = elapsedSpan.TotalMilliseconds;
+
+                    // 5. 로그 출력
+                    // 주의: 수천 명이 동시에 받으면 로그창이 멈출 수 있으므로, 
+                    // 특정 조건(예: Latency가 100ms 이상 튀었을 때)에만 찍거나 
+                    // 별도 카운터로 평균을 내는 것이 좋습니다.
+
+                    // 예시: 무조건 출력
+                    DevLog.Write($"[Latency] {latencyMs:F4} ms");
+                }
+                else
+                {
+                    // 기존 문자열 방식과 섞여 있을 경우를 대비
+                    DevLog.Write($"Echo(Text): {Encoding.UTF8.GetString(bodyData)}");
+                }
+            }
+            catch (Exception ex)
+            {
+                DevLog.Write($"Echo Process Error: {ex.Message}", LOG_LEVEL.ERROR);
+            }
         }
 
         void PacketProcess_LoginResponse(byte[] bodyData)
