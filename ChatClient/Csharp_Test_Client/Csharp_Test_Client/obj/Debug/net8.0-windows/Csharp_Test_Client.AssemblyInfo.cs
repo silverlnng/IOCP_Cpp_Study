@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Csharp_Test_Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+798cd222404247fc04441d2ba2e56d9a09437a88")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d988c1ef1bf5a3199528d089cc504c90ab9fb712")]
 [assembly: System.Reflection.AssemblyProductAttribute("Csharp_Test_Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Csharp_Test_Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

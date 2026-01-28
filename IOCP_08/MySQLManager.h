@@ -148,6 +148,8 @@ public:
                     // 기본값: 비밀번호 틀림으로 설정
                     bodyData.Result = (UINT16)ERROR_CODE::LOGIN_USER_INVALID_PW;
 
+                    printf("[MySQL::TaskProcessThread] 로그인 TaskID : %s\n", pRequest->UserID);
+
                     // TODO: MySQL 에서 검증하기 
 
                     // -------------------------------------------------------------
@@ -156,12 +158,13 @@ public:
 
 
                     try {
+
                         // 1) Statement 생성
-                        // 주의: 멀티스레드 환경에서는 커넥션 풀을 쓰거나 lock이 필요하지만, 
-                        // 현재 구조상 mConn 하나를 공유하므로 간단히 구현합니다.
-                       
+                   // 주의: 멀티스레드 환경에서는 커넥션 풀을 쓰거나 lock이 필요하지만, 
+                   // 현재 구조상 mConn 하나를 공유하므로 간단히 구현합니다.
                         sql::Statement* stmt = con->createStatement();
-                        // 2) 쿼리 작성 (UserAccount 테이블, id 컬럼 기준)
+
+                        // 2) 쿼리 작성 (UserAccount 테이블, username 컬럼 기준)
                         // 실제로는 SQL Injection 방지를 위해 PreparedStatement 사용을 권장합니다.
                         std::string query = "SELECT password FROM UserAccount WHERE id = '";
                         query += std::string(pRequest->UserID) + "'";
@@ -173,6 +176,7 @@ public:
                         if (res->next()) {
                             // DB에 유저가 존재함 -> 비밀번호 가져오기
                             std::string dbPw = res->getString("password");
+                         
 
                             // 5) 비밀번호 검증
                             // pRequest->UserPW: 유저가 보낸 비번, dbPw: DB에 저장된 비번
@@ -180,7 +184,6 @@ public:
                             {
                                 bodyData.Result = (UINT16)ERROR_CODE::NONE; // 성공 [2]
 
-                                printf("[MySQL::TaskProcessThread] Login Success: %s\n", pRequest->UserID);
 
                                 MySQLTask resTask;
                                 resTask.UserIndex = task.UserIndex;
@@ -195,12 +198,12 @@ public:
 
                             }
                             else {
-                                printf("[MySQL::TaskProcessThread] Password Mismatch: %s\n", pRequest->UserID);
+                                printf("[MySQL::TaskProcessThread] Password Mismatch: %s\n",pRequest->UserID);
                             }
                         }
                         else {
                             // DB에 유저가 없음
-                            printf("[MySQL::TaskProcessThread] User Not Found: %s\n", pRequest->UserID);
+                            printf("[MySQL::TaskProcessThread] User Not Found: %s\n",pRequest->UserID);
                             // 필요하다면 ERROR_CODE::LOGIN_USER_NOT_FOUND 등을 정의해서 사용
                         }
 

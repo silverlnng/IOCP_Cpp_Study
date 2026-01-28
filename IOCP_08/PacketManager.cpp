@@ -326,32 +326,42 @@ void PacketManager::ProcessLogin(UINT32 clientIndex_, UINT16 packetSize_, char* 
 	if (mUserManager->FindUserIndexByID(pUserID) == -1)
 	{
 		// 이미 접속중인 유저가 아닌 경우
-		// RedisLoginReq 구조체에 로그인 요청 정보 채우기
-		RedisLoginReq dbReq;
-
 		
-		CopyMemory(dbReq.UserID, pLoginReqPacket->UserID, MAX_USER_ID_LEN + 1);
-		CopyMemory(dbReq.UserPW, pLoginReqPacket->UserPW, MAX_USER_PW_LEN + 1);
+		/*RedisLoginReq dbReq;
+		CopyMemory(dbReq.UserID, pLoginReqPacket->UserID, (MAX_USER_ID_LEN + 1));
+		CopyMemory(dbReq.UserPW, pLoginReqPacket->UserPW, (MAX_USER_PW_LEN + 1));
 
-		// RedisTask 생성
-		// RedisTask 에 로그인 요청 정보 채우기
+		RedisTask task;
+		task.UserIndex = clientIndex_;
+		task.TaskID = RedisTaskID::REQUEST_LOGIN;
+		task.DataSize = sizeof(RedisLoginReq);
+		task.pData = new char[task.DataSize];
+		CopyMemory(task.pData, (char*)&dbReq, task.DataSize);
+		mRedisMgr->PushTask(task);*/
 
+
+	
 		// TODO : MySQL 으로 변경해주기
+
+		MySQLLoginReq dbReq;
+		CopyMemory(dbReq.UserID, pLoginReqPacket->UserID, (MAX_USER_ID_LEN + 1));
+		CopyMemory(dbReq.UserPW, pLoginReqPacket->UserPW, (MAX_USER_PW_LEN + 1));
 
 		MySQLTask task;
 		task.UserIndex = clientIndex_;
 		task.TaskID = MySQLTaskID::REQUEST_LOGIN;
-		task.DataSize = sizeof(RedisLoginReq);
+		task.DataSize = sizeof(MySQLLoginReq);
 		task.pData = new char[task.DataSize];
 
-		CopyMemory(task.pData, (char*) & dbReq, task.DataSize);
+		CopyMemory(task.pData, (char*)&dbReq, task.DataSize);
 
 		mMySQLManager->PushTask(task);
 
 		printf("[PacketManager::ProcessLogin] MySQL Login Request PushTask UserID : %s \n", pUserID);
 
-		task.Release();
-		
+		//task.Release();=> 여기서는 Release 하면 안됨 . MySQLManager 쪽에서 처리 후 Release 해야함
+		//왜? => MySQLManager 쪽에서 TakeResponseTask 할때 pData 가 날아가버림
+		// pData 가 new char[] 로 할당된 메모리이기 때문에 MySQLManager 쪽에서 처리가 끝난 후에 Release 해야함
 	}
 	else
 	{
