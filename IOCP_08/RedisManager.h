@@ -85,6 +85,7 @@ private:
 		else
 		{
 			std::cout << "Redis Connect success" << std::endl;
+			return true;
 		}
 	}
 

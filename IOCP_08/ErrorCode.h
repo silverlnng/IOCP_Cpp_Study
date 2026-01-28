@@ -23,6 +23,6 @@ enum class ERROR_CODE : unsigned short
 	ROOM_NOT_USED = 62,
 	ROOM_TOO_MANY_PACKET = 63,
 
-
+	MYSQL_SERVER_ERROR = 64,
 
 };

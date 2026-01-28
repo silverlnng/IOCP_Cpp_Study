@@ -26,6 +26,8 @@ public:
             std::cout << "MySQL DB에 연결을 시도합니다..." << std::endl;
             con = driver->connect(host, user, pass);
 
+            con->setSchema("my_game_db");
+
             std::cout << "MySQL 연결 성공!" << std::endl;
 
 			return true;
@@ -52,10 +54,7 @@ public:
 
     // 서버 시작할 때 한 번 호출
     bool Run(std::string host, std::string user, std::string pass, const UINT32 threadCount_) 
-{
-        auto driver = sql::mysql::get_mysql_driver_instance();
-        con = driver->connect("tcp://127.0.0.1:3306", "root", "password");
-
+    {
         if (Connect(host, user, pass) == false)
         {
             std::cout << "MySQL 연결 실패!" << std::endl;
@@ -104,6 +103,23 @@ public:
         mRequestTask.push_back(task_);
     }
 
+    // Packet Manager 의 ProcessThread 에서 계속 확인하고 작동 중
+    MySQLTask TakeResponseTask()
+    {
+        std::lock_guard<std::mutex> guard(mResLock);
+
+        if (mResponseTask.empty())
+        {
+            return MySQLTask();
+        }
+
+        auto task = mResponseTask.front();
+        mResponseTask.pop_front();
+
+        return task;
+    }
+
+
     // 서버 종료할 때 딱 한 번 호출
     void Disconnect() {
         if (con) {
@@ -129,34 +145,74 @@ public:
                     auto pRequest = (MySQLLoginReq*)task.pData;
 
                     MySQLLoginRes bodyData;
+                    // 기본값: 비밀번호 틀림으로 설정
                     bodyData.Result = (UINT16)ERROR_CODE::LOGIN_USER_INVALID_PW;
 
-					// TODO: MySQL 에서 검증하기 
+                    // TODO: MySQL 에서 검증하기 
 
-                    /*std::string value;
-                    if (mConn.get(pRequest->UserID, value))
-                    {
-                        bodyData.Result = (UINT16)ERROR_CODE::NONE;
+                    // -------------------------------------------------------------
+                    // [수정] 로그인 요청 처리 (SELECT 쿼리 검증)
+                    // -------------------------------------------------------------
 
-                        if (value.compare(pRequest->UserPW) == 0)
-                        {
-                            bodyData.Result = (UINT16)ERROR_CODE::NONE;
+
+                    try {
+                        // 1) Statement 생성
+                        // 주의: 멀티스레드 환경에서는 커넥션 풀을 쓰거나 lock이 필요하지만, 
+                        // 현재 구조상 mConn 하나를 공유하므로 간단히 구현합니다.
+                       
+                        sql::Statement* stmt = con->createStatement();
+                        // 2) 쿼리 작성 (UserAccount 테이블, id 컬럼 기준)
+                        // 실제로는 SQL Injection 방지를 위해 PreparedStatement 사용을 권장합니다.
+                        std::string query = "SELECT password FROM UserAccount WHERE id = '";
+                        query += std::string(pRequest->UserID) + "'";
+
+                        // 3) 쿼리 실행
+                        sql::ResultSet* res = stmt->executeQuery(query);
+
+                        // 4) 결과 확인
+                        if (res->next()) {
+                            // DB에 유저가 존재함 -> 비밀번호 가져오기
+                            std::string dbPw = res->getString("password");
+
+                            // 5) 비밀번호 검증
+                            // pRequest->UserPW: 유저가 보낸 비번, dbPw: DB에 저장된 비번
+                            if (dbPw == std::string(pRequest->UserPW))
+                            {
+                                bodyData.Result = (UINT16)ERROR_CODE::NONE; // 성공 [2]
+
+                                printf("[MySQL::TaskProcessThread] Login Success: %s\n", pRequest->UserID);
+
+                                MySQLTask resTask;
+                                resTask.UserIndex = task.UserIndex;
+                                resTask.TaskID = MySQLTaskID::RESPONSE_LOGIN;
+                                resTask.DataSize = sizeof(MySQLLoginRes);
+                                resTask.pData = new char[resTask.DataSize];
+                                CopyMemory(resTask.pData, (char*)&bodyData, resTask.DataSize);
+
+                                PushResponse(resTask);
+
+                                task.Release();
+
+                            }
+                            else {
+                                printf("[MySQL::TaskProcessThread] Password Mismatch: %s\n", pRequest->UserID);
+                            }
                         }
-                    }*/
+                        else {
+                            // DB에 유저가 없음
+                            printf("[MySQL::TaskProcessThread] User Not Found: %s\n", pRequest->UserID);
+                            // 필요하다면 ERROR_CODE::LOGIN_USER_NOT_FOUND 등을 정의해서 사용
+                        }
 
-                    //
-
-                    MySQLTask resTask;
-                    resTask.UserIndex = task.UserIndex;
-                    resTask.TaskID = MySQLTaskID::RESPONSE_LOGIN;
-                    resTask.DataSize = sizeof(MySQLLoginRes);
-                    resTask.pData = new char[resTask.DataSize];
-                    CopyMemory(resTask.pData, (char*)&bodyData, resTask.DataSize);
-
-                    PushResponse(resTask);
+                        // 리소스 해제
+                        delete res;
+                        delete stmt;
+                    }
+                    catch (sql::SQLException& e) {
+                        printf("[MySQL Error::TaskProcessThread] %s\n", e.what());
+                        bodyData.Result = (UINT16)ERROR_CODE::MYSQL_SERVER_ERROR; // 서버 에러 처리
+                    }
                 }
-
-                task.Release();
             }
 
 

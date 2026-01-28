@@ -20,7 +20,10 @@ void PacketManager::Init(const UINT32 maxClient_)
 
 
 	mRecvFuntionalDictionary[(int)PACKET_ID::LOGIN_REQUEST] = &PacketManager::ProcessLogin;
+
+
 	mRecvFuntionalDictionary[(int)RedisTaskID::RESPONSE_LOGIN] = &PacketManager::ProcessLoginDBResult;
+	mRecvFuntionalDictionary[(int)MySQLTaskID::RESPONSE_LOGIN] = &PacketManager::ProcessLoginDBResult;
 
 	mRecvFuntionalDictionary[(int)PACKET_ID::ROOM_ENTER_REQUEST] = &PacketManager::ProcessEnterRoom;
 
@@ -45,17 +48,17 @@ void PacketManager::CreateComponent(const UINT32 maxClient_)
 
 bool PacketManager::Run()
 {
+	// MySQL 서버와의 연결하기
+	if(mMySQLManager->Run("tcp://127.0.0.1:3306", "root", "1234",1)==false)
+	{
+		//return false;
+	}
 	// Redis 서버와의 연결하기
 	if (mRedisManager->Run("127.0.0.1",6379,1)==false)
 	{
 		//return false;	
 	}
 
-	// MySQL 서버와의 연결하기
-	if(mMySQLManager->Run("tcp://127.0.0.1:3306", "root", "1234",1)==false)
-	{
-		//return false;
-	}
 
 
 	mIsRunProcessThread = true;
@@ -139,6 +142,16 @@ void PacketManager::ProcessPacket()
 		{
 			isIdle = false;
 			
+			ProcessRecvPacket(task.UserIndex, (UINT16)task.TaskID, task.DataSize, task.pData);
+
+			task.Release();
+		}
+
+		// MySQL 의 응답 Task 확인하고 가져오기 추가
+		if (auto task = mMySQLManager->TakeResponseTask(); task.TaskID != MySQLTaskID::INVALID)
+		{
+			isIdle = false;
+
 			ProcessRecvPacket(task.UserIndex, (UINT16)task.TaskID, task.DataSize, task.pData);
 
 			task.Release();
@@ -335,18 +348,10 @@ void PacketManager::ProcessLogin(UINT32 clientIndex_, UINT16 packetSize_, char* 
 
 		mMySQLManager->PushTask(task);
 
-		printf("[PacketManager::ProcessLogin] Redis Login Request PushTask UserID : %s \n", pUserID);
+		printf("[PacketManager::ProcessLogin] MySQL Login Request PushTask UserID : %s \n", pUserID);
 
-		// [추가] MySQL 응답 큐 확인
-		//if (auto task = mMysqlManager->TakeResponseTask(); task.TaskID != MySQLTaskID::INVALID)
-		//{
-		//	isIdle = false;
-		//	// 결과 처리 함수 호출 (ProcessLoginDBResult 재사용 가능)
-		//	ProcessLoginDBResult(task.UserIndex, (UINT16)task.TaskID, task.DataSize, task.pData);
-
-		//	task.Release();
-		//}
-
+		task.Release();
+		
 	}
 	else
 	{

@@ -504,7 +504,7 @@ public partial class MainForm : Form
 
     private void Btn_Multi_Echo_Click(object sender, EventArgs e)
     {
-       
+
         // 1.보낼 텍스트가 있는지 확인(기존 소스 button1_Click 로직 활용)[1]
         /*if (string.IsNullOrEmpty(textSendText.Text))
         {
@@ -523,7 +523,7 @@ public partial class MainForm : Form
             DevLog.Write("메시지를 보낼 클라이언트가 없습니다. 먼저 다중 접속을 수행하세요.", LOG_LEVEL.WARN);
             return;
         }
-     
+
         // 3. 에코 패킷 데이터 생성 (Packet.txt 및 mainForm.txt의 규격 준수) [2-4]
         //var body = Encoding.UTF8.GetBytes(textSendText.Text);
 
@@ -605,4 +605,72 @@ public partial class MainForm : Form
         // 6. 결과 로그 기록
         DevLog.Write($"{sendCount}명의 클라이언트가 채팅 패킷을 전송했습니다: {textBoxRoomSendMsg.Text}", LOG_LEVEL.INFO);
     }
+
+    private void BtnMultiLogin_Click(object sender, EventArgs e)
+    {
+        // 1. 접속된 클라이언트가 있는지 확인
+        if (MultiClientList.Count == 0)
+        {
+            DevLog.Write("접속된 멀티 클라이언트가 없습니다.", LOG_LEVEL.ERROR);
+            return;
+        }
+
+        DevLog.Write($"{MultiClientList.Count}명 로그인 요청 시작...", LOG_LEVEL.INFO);
+
+        for (int i = 0; i < MultiClientList.Count; i++)
+        {
+            var client = MultiClientList[i];
+
+            if (client.IsConnected() == false) { continue; }
+
+            try
+            {
+                // DB에 넣은 "User_0", "User_1" ... 형식과 일치시킴
+                string userId = $"ID_{i}";
+                string userPw = $"pass_{i}"; // DB에 넣은 비밀번호와 일치
+
+                // 로그인 요청 패킷 전송
+                var loginReq = new LoginReqPacket();
+                loginReq.SetValue(userId, userPw);
+
+                // C. 공통 함수로 전송용 바이트 배열 생성
+                byte[] sendData = MakePacketBuffer(PACKET_ID.LOGIN_REQ, loginReq.ToBytes());
+
+                // D. 해당 클라이언트 소켓으로 직접 전송 [3]
+                client.Send(sendData);
+            }
+            catch (Exception ex)
+            {
+                DevLog.Write($"Index[{i}] 로그인 요청 실패: {ex.Message}", LOG_LEVEL.ERROR);
+            }
+            DevLog.Write($"{MultiClientList.Count}명 의 로그인 요청");
+        }
+    }
+
+    public byte[] MakePacketBuffer(PACKET_ID packetID, byte[] bodyData)
+    {
+        // 1. 바디 크기 계산
+        Int16 bodyDataSize = 0;
+        if (bodyData != null)
+        {
+            bodyDataSize = (Int16)bodyData.Length;
+        }
+
+        // 2. 전체 패킷 크기 계산 (헤더 + 바디)
+        var packetSize = bodyDataSize + PacketDef.PACKET_HEADER_SIZE;
+
+        // 3. 리스트에 바이트 추가 (기존 PostSendPacket 로직 활용)
+        List<byte> dataSource = new List<byte>();
+        dataSource.AddRange(BitConverter.GetBytes((UInt16)packetSize));
+        dataSource.AddRange(BitConverter.GetBytes((UInt16)packetID));
+        dataSource.AddRange(new byte[] { (byte)0 }); // Type
+
+        if (bodyData != null)
+        {
+            dataSource.AddRange(bodyData);
+        }
+
+        return dataSource.ToArray();
+    }
+
 }

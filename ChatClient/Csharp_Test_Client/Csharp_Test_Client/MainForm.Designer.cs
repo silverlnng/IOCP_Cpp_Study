@@ -388,6 +388,7 @@
             BtnMultiLogin.TabIndex = 4;
             BtnMultiLogin.Text = "모든 테스트 클라이언트 로그인하기";
             BtnMultiLogin.UseVisualStyleBackColor = true;
+            BtnMultiLogin.Click += BtnMultiLogin_Click;
             // 
             // BtnMultiDisConnect
             // 
