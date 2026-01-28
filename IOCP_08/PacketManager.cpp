@@ -355,6 +355,7 @@ void PacketManager::ProcessLogin(UINT32 clientIndex_, UINT16 packetSize_, char* 
 
 		CopyMemory(task.pData, (char*)&dbReq, task.DataSize);
 
+		// ÁÖÀÇ :  MySQLTaskÀÇ char* pData ´Â ¾èÀºº¹»ç°¡ µÊ
 		mMySQLManager->PushTask(task);
 
 		printf("[PacketManager::ProcessLogin] MySQL Login Request PushTask UserID : %s \n", pUserID);

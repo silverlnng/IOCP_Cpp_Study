@@ -16,6 +16,7 @@ namespace Csharp_Test_Client
         void SetPacketHandler()
         {
             PacketFuncDic.Add(PACKET_ID.DEV_ECHO, PacketProcess_DevEcho);
+            PacketFuncDic.Add(PACKET_ID.LOGIN_RES, PacketProcess_LoginResponse);
         }
 
         void PacketProcess(PacketData packet)
@@ -28,7 +29,7 @@ namespace Csharp_Test_Client
             }
             else
             {
-
+                DevLog.Write("Unknown Packet Id: " + packet.PacketID.ToString());
             }
         }
 
@@ -75,7 +76,10 @@ namespace Csharp_Test_Client
 
         void PacketProcess_LoginResponse(byte[] bodyData)
         {
+            var responsePkt = new LoginResPacket();
+            responsePkt.FromBytes(bodyData);
 
+            DevLog.Write($"로그인 결과:  {(ERROR_CODE)responsePkt.Result}");
         }
 
         void PacketProcess_RoomChatResponse(byte[] bodyData)

@@ -97,6 +97,7 @@ public:
         Disconnect();
     }
 
+    // MySQLTask의 char* pData 는 얕은복사가 됨
     void PushTask(MySQLTask task_)
     {
         std::lock_guard<std::mutex> guard(mReqLock);
@@ -148,7 +149,7 @@ public:
                     // 기본값: 비밀번호 틀림으로 설정
                     bodyData.Result = (UINT16)ERROR_CODE::LOGIN_USER_INVALID_PW;
 
-                    printf("[MySQL::TaskProcessThread] 로그인 TaskID : %s\n", pRequest->UserID);
+                    printf("[MySQLManager::TaskProcessThread] 로그인 TaskID : %s\n", pRequest->UserID);
 
                     // TODO: MySQL 에서 검증하기 
 
@@ -194,7 +195,8 @@ public:
 
                                 PushResponse(resTask);
 
-                                task.Release();
+								// task.Release(); 
+                                // MySQLTask 의 pData 메모리 해제는 PacketManager 쪽에서 처리
 
                             }
                             else {

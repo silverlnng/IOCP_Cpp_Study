@@ -17,7 +17,7 @@ namespace Csharp_Test_Client
     {
         public Socket Sock = null;
 
-        private PacketBufferManager _packetBuffer = new PacketBufferManager();
+        private PacketBufferManager _packetBuffer;
         private byte[] _tempBuffer = new byte[1024 * 2]; // 수신용 임시 버퍼
 
         // 완성된 패킷을 담아둘 큐 (mainForm의 구조 계승)
@@ -25,6 +25,13 @@ namespace Csharp_Test_Client
         public object LockObj = new object();
 
         public string LatestErrorMsg;
+        
+        public ClientMultiTCP()
+        {
+            // 패킷 버퍼 매니저 초기화
+            _packetBuffer = new PacketBufferManager();
+            _packetBuffer.Init((1024 * 10), PacketDef.PACKET_HEADER_SIZE, 1024);
+        }
 
         // 1. 비동기 접속 시작
         public bool Connect(string ip, int port)

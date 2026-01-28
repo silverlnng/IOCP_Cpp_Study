@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|d:\\serverstudy\\yjstudy\\iocp\\iocpstudy\\chatclient\\csharp_test_client\\csharp_test_client\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|solutionrelative:csharp_test_client\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|d:\\serverstudy\\yjstudy\\iocp\\iocpstudy\\chatclient\\csharp_test_client\\csharp_test_client\\packetprocessform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|solutionrelative:csharp_test_client\\packetprocessform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\csharp_test_client\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|solutionrelative:csharp_test_client\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|d:\\serverstudy\\yjstudy\\iocp\\iocpstudy\\chatclient\\csharp_test_client\\csharp_test_client\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|solutionrelative:csharp_test_client\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|d:\\serverstudy\\yjstudy\\iocp\\iocpstudy\\chatclient\\csharp_test_client\\csharp_test_client\\packetbuffermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -17,6 +17,18 @@
     {
       "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|d:\\serverstudy\\yjstudy\\iocp\\iocpstudy\\chatclient\\csharp_test_client\\csharp_test_client\\clientmultitcp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|solutionrelative:csharp_test_client\\clientmultitcp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\csharp_test_client\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|solutionrelative:csharp_test_client\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|d:\\serverstudy\\yjstudy\\iocp\\iocpstudy\\chatclient\\csharp_test_client\\csharp_test_client\\packetdefine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|solutionrelative:csharp_test_client\\packetdefine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|d:\\serverstudy\\yjstudy\\iocp\\iocpstudy\\chatclient\\csharp_test_client\\csharp_test_client\\clientsimpletcp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C502CFBC-065B-40BD-8F9E-ECE13AB36E65}|Csharp_Test_Client\\Csharp_Test_Client.csproj|solutionrelative:csharp_test_client\\clientsimpletcp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,8 +38,47 @@
       "DocumentGroups": [
         {
           "DockedWidth": 286,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PacketProcessForm.cs",
+              "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\PacketProcessForm.cs",
+              "RelativeDocumentMoniker": "Csharp_Test_Client\\PacketProcessForm.cs",
+              "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\PacketProcessForm.cs",
+              "RelativeToolTip": "Csharp_Test_Client\\PacketProcessForm.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAIAzwB8AAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-28T03:05:27.889Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ClientSimpleTCP.cs",
+              "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\ClientSimpleTCP.cs",
+              "RelativeDocumentMoniker": "Csharp_Test_Client\\ClientSimpleTCP.cs",
+              "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\ClientSimpleTCP.cs",
+              "RelativeToolTip": "Csharp_Test_Client\\ClientSimpleTCP.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAgwD0AAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-28T03:00:31.464Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PacketDefine.cs",
+              "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\PacketDefine.cs",
+              "RelativeDocumentMoniker": "Csharp_Test_Client\\PacketDefine.cs",
+              "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\PacketDefine.cs",
+              "RelativeToolTip": "Csharp_Test_Client\\PacketDefine.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAQwBcAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-28T02:58:00.796Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -36,20 +87,20 @@
               "RelativeDocumentMoniker": "Csharp_Test_Client\\PacketBufferManager.cs",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\PacketBufferManager.cs",
               "RelativeToolTip": "Csharp_Test_Client\\PacketBufferManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAUwE0AAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-28T01:06:43.499Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "MainForm.cs",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\MainForm.cs",
               "RelativeDocumentMoniker": "Csharp_Test_Client\\MainForm.cs",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\MainForm.cs",
               "RelativeToolTip": "Csharp_Test_Client\\MainForm.cs",
-              "ViewState": "AgIAAG4CAAAAAAAAAAAqwHoCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAMBAAAAAAAAAAAlwBMBAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-28T00:40:01.817Z",
               "EditorCaption": ""
@@ -62,13 +113,14 @@
               "RelativeDocumentMoniker": "Csharp_Test_Client\\ClientMultiTCP.cs",
               "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\ClientMultiTCP.cs",
               "RelativeToolTip": "Csharp_Test_Client\\ClientMultiTCP.cs",
-              "ViewState": "AgIAAJIAAAAAAAAAAAAewJAAAAAfAAAAAAAAAA==",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAlwH0AAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-28T00:26:06.591Z"
+              "WhenOpened": "2026-01-28T00:26:06.591Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "MainForm.cs [Design]",
               "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ChatClient\\Csharp_Test_Client\\Csharp_Test_Client\\MainForm.cs",
               "RelativeDocumentMoniker": "Csharp_Test_Client\\MainForm.cs",

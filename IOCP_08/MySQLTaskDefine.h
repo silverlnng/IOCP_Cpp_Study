@@ -21,6 +21,8 @@ struct MySQLTask
 	UINT32 UserIndex = 0;
 	MySQLTaskID TaskID = MySQLTaskID::INVALID;
 	UINT16 DataSize = 0;
+	
+	// 주의 ! 포인터 멤버 변수
 	char* pData = nullptr;
 
 	void Release()

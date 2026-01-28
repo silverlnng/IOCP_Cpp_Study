@@ -40,7 +40,7 @@ public partial class MainForm : Form
     private void MainForm_Load(object sender, EventArgs e)
     {
         // 패킷버퍼 초기화
-
+        PacketBuffer.Init((8096 * 10), PacketDef.PACKET_HEADER_SIZE, 1024);
         // 스레드 시작
 
         IsNetworkThreadRunning = true;
@@ -56,14 +56,14 @@ public partial class MainForm : Form
         IsBackGroundProcessRunning = true;
 
         dispatcherUITimer = new System.Windows.Forms.Timer();
-
         dispatcherUITimer.Tick += new EventHandler(BackGroundProcess);
-
         dispatcherUITimer.Interval = 100;
         dispatcherUITimer.Start();
 
         BtnDisconnect.Enabled = false;
 
+        SetPacketHandler();
+        DevLog.Write("프로그램 시작 !!!", LOG_LEVEL.INFO);
     }
 
 
@@ -643,7 +643,7 @@ public partial class MainForm : Form
             {
                 DevLog.Write($"Index[{i}] 로그인 요청 실패: {ex.Message}", LOG_LEVEL.ERROR);
             }
-            DevLog.Write($"{MultiClientList.Count}명 의 로그인 요청");
+            //DevLog.Write($"{MultiClientList.Count}명 의 로그인 요청");
         }
     }
 
