@@ -26,6 +26,7 @@ public:
             std::cout << "MySQL DB에 연결을 시도합니다..." << std::endl;
             con = driver->connect(host, user, pass);
 
+			//사용할 DB 스키마 선택
             con->setSchema("my_game_db");
 
             std::cout << "MySQL 연결 성공!" << std::endl;
@@ -184,20 +185,6 @@ public:
                             if (dbPw == std::string(pRequest->UserPW))
                             {
                                 bodyData.Result = (UINT16)ERROR_CODE::NONE; // 성공 [2]
-
-
-                                MySQLTask resTask;
-                                resTask.UserIndex = task.UserIndex;
-                                resTask.TaskID = MySQLTaskID::RESPONSE_LOGIN;
-                                resTask.DataSize = sizeof(MySQLLoginRes);
-                                resTask.pData = new char[resTask.DataSize];
-                                CopyMemory(resTask.pData, (char*)&bodyData, resTask.DataSize);
-
-                                PushResponse(resTask);
-
-								// task.Release(); 
-                                // MySQLTask 의 pData 메모리 해제는 PacketManager 쪽에서 처리
-
                             }
                             else {
                                 printf("[MySQL::TaskProcessThread] Password Mismatch: %s\n",pRequest->UserID);
@@ -217,6 +204,44 @@ public:
                         printf("[MySQL Error::TaskProcessThread] %s\n", e.what());
                         bodyData.Result = (UINT16)ERROR_CODE::MYSQL_SERVER_ERROR; // 서버 에러 처리
                     }
+
+                    MySQLTask resTask;
+                    resTask.UserIndex = task.UserIndex;
+                    resTask.TaskID = MySQLTaskID::RESPONSE_LOGIN;
+                    resTask.DataSize = sizeof(MySQLLoginRes);
+                    resTask.pData = new char[resTask.DataSize];
+                    CopyMemory(resTask.pData, (char*)&bodyData, resTask.DataSize);
+
+                    PushResponse(resTask);
+
+                    task.Release(); 
+
+                    // MySQLTask 의 resTask.Release(); (pData 메모리 해제는) PacketManager 쪽에서 처리
+
+                }
+                else if (task.TaskID == MySQLTaskID::REQUEST_UPDATE_SCORE)
+                {
+                    auto pRequest = (MySQLUpdateScoreReq*)task.pData;
+
+                    try {
+                        sql::Statement* stmt = con->createStatement();
+
+                        // "UserAccount" 테이블이 있다고 가정 (id, score 컬럼)
+                        // 이미 있으면 업데이트, 없으면 삽입 (ON DUPLICATE KEY UPDATE)
+                        std::string query = "INSERT INTO UserAccount (id, score) VALUES ('";
+                        query += std::string(pRequest->UserID) + "', " + std::to_string(pRequest->Score) + ")";
+                        query += " ON DUPLICATE KEY UPDATE score = " + std::to_string(pRequest->Score);
+
+                        stmt->execute(query); // [9]
+                        delete stmt;
+
+                        printf("[MySQL] 점수 저장 완료: %s -> %d\n", pRequest->UserID, pRequest->Score);
+                    }
+                    catch (sql::SQLException& e) {
+                        printf("[MySQL Error] %s\n", e.what());
+                    }
+
+                    task.Release(); // 메모리 해제 필수 [3]
                 }
             }
 

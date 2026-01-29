@@ -38,6 +38,7 @@ namespace Csharp_Test_Client
         ROOM_CHAT_RES=222,
         ROOM_CHAT_NOTIFY=223,
 
+        UPDATE_CLIENT_SCORE_REQ = 231,
     }
 
     public enum  ERROR_CODE : Int16

@@ -155,9 +155,32 @@ private:
 
 				PushResponse(resTask);
 
+				task.Release();
+
 			}
 
-			task.Release();
+			if (task.TaskID == RedisTaskID::REQUEST_UPDATE_SCORE)
+			{
+				auto pRequest = (RedisUpdateScoreReq*)task.pData;
+
+				// Redis ZADD 커맨드: ZADD key score member
+				// 예: ZADD "GameRanking" 1500 "User_1"
+
+
+				// CRedisConn 래퍼에 Sorted Set(정렬된 집합) 을 에 추가하는 함수 zadd를 구현
+				mConn.zadd("GameRanking", pRequest->Score, pRequest->UserID);
+
+				// 예시 (가상 코드):
+				std::cout << "[Redis] 랭킹 업데이트 요청 (ZADD GameRanking "
+					<< pRequest->Score << " " << pRequest->UserID << ")" << std::endl;
+
+				// 실제 구현된 라이브러리에 맞게 호출 (예: cpp_redis 등)
+				// mConn.sendCommand("ZADD", "GameRanking", std::to_string(pRequest->Score), pRequest->UserID);
+
+				task.Release(); // 메모리 해제 필수 [10]
+			}
+
+			
 		}
 
 		printf(" Redis 의 스레드 종료 \n");

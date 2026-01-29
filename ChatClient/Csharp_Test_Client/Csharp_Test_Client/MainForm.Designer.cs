@@ -64,6 +64,7 @@
             BtnMultiConnect = new Button();
             label6 = new Label();
             textBoxClientNum = new TextBox();
+            BtnUpdateScoreMulti = new Button();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             Room.SuspendLayout();
@@ -346,6 +347,7 @@
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(BtnUpdateScoreMulti);
             groupBox3.Controls.Add(btnMultiChat);
             groupBox3.Controls.Add(Btn_Multi_Echo);
             groupBox3.Controls.Add(BtnMultiLogin);
@@ -355,14 +357,14 @@
             groupBox3.Controls.Add(textBoxClientNum);
             groupBox3.Location = new Point(12, 658);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(535, 267);
+            groupBox3.Size = new Size(535, 307);
             groupBox3.TabIndex = 14;
             groupBox3.TabStop = false;
             groupBox3.Text = "테스트";
             // 
             // btnMultiChat
             // 
-            btnMultiChat.Location = new Point(14, 206);
+            btnMultiChat.Location = new Point(9, 194);
             btnMultiChat.Name = "btnMultiChat";
             btnMultiChat.Size = new Size(264, 41);
             btnMultiChat.TabIndex = 6;
@@ -425,6 +427,16 @@
             textBoxClientNum.Name = "textBoxClientNum";
             textBoxClientNum.Size = new Size(100, 23);
             textBoxClientNum.TabIndex = 0;
+            // 
+            // BtnUpdateScoreMulti
+            // 
+            BtnUpdateScoreMulti.Location = new Point(10, 241);
+            BtnUpdateScoreMulti.Name = "BtnUpdateScoreMulti";
+            BtnUpdateScoreMulti.Size = new Size(266, 33);
+            BtnUpdateScoreMulti.TabIndex = 7;
+            BtnUpdateScoreMulti.Text = "모든 테스트 클라이언트 랜덤 점수 부여하기 ";
+            BtnUpdateScoreMulti.UseVisualStyleBackColor = true;
+            BtnUpdateScoreMulti.Click += BtnUpdateScoreMulti_Click;
             // 
             // MainForm
             // 
@@ -494,5 +506,6 @@
         private TextBox textBoxRoomSendMsg;
         private Button Btn_Multi_Echo;
         private Button btnMultiChat;
+        private Button BtnUpdateScoreMulti;
     }
 }

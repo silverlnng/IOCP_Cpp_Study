@@ -43,6 +43,7 @@ enum class PACKET_ID : UINT16
 	ROOM_CHAT_REPONSE = 222,
 	ROOM_CHAT_NOTIFY = 223,
 
+	UPDATE_CLIENT_SCORE_REQUEST = 231,
 };
 
 
@@ -120,6 +121,12 @@ struct ROOM_CHAT_NOTIFY_PACKET : public PACKET_HEADER
 {
 	char UserID[MAX_USER_ID_LEN + 1] = { 0, };
 	char Msg[MAX_ROOM_CHAT_MSG_SIZE + 1] = { 0, };
+};
+
+
+struct UPDATE_CLIENT_SCORE_REQUEST_PACKET : public PACKET_HEADER
+{
+	INT32 NewScore; // 클라이언트의 새로운 점수를 담을 변수
 };
 
 #pragma pack(pop) // 위에 설정된 패킹설정이 사라짐

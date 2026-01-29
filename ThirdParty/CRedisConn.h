@@ -874,6 +874,41 @@ public:
 		return ret;
 	}
 
+	/**
+* @brief Sorted Set에 데이터 추가 (ZADD)
+* @param key 랭킹 키 이름 (예: "GameRanking")
+* @param score 점수
+* @param member 멤버 이름 (UserID)
+*/
+	bool zadd(const std::string& key, int32_t score, const std::string& member)
+	{
+		if (!_connected || !_redCtx)
+		{
+			_errStr = _errDes[ERR_NO_CONNECT];
+			return false;
+		}
+
+		// ZADD key score member
+		redisReply* reply = redisCmd("ZADD %s %d %s", key.c_str(), score, member.c_str());
+
+		bool ret = false;
+		if (_getError(reply))
+		{
+			ret = false;
+		}
+		else
+		{
+			ret = true; // 성공
+		}
+
+		if (NULL != reply)
+		{
+			freeReplyObject(reply);
+		}
+
+		return ret;
+	}
+
 protected:
 	/**
 	 *@brief  从 reply->type 为REDIS_REPLY_ARRY 类型的元素获取数据填充到　valueList 列表.

@@ -107,4 +107,37 @@ namespace Csharp_Test_Client
         }
     }
 
+    public class RoomChatNotifyPacket
+    {
+        byte[] UserID = new byte[PacketDef.MAX_USER_ID_BYTE_LENGTH];
+        byte[] Msg = new byte[PacketDef.MAX_CHAT_MSG_SIZE];
+        public bool FromBytes(byte[] bodyData)
+        {
+            Array.Copy(bodyData, 0, UserID, 0, PacketDef.MAX_USER_ID_BYTE_LENGTH);
+            Array.Copy(bodyData, PacketDef.MAX_USER_ID_BYTE_LENGTH, Msg, 0, PacketDef.MAX_CHAT_MSG_SIZE);
+            return true;
+        }
+        public string GetUserID()
+        {
+            return Encoding.UTF8.GetString(UserID).TrimEnd('\0');
+        }
+        public string GetMsg()
+        {
+            return Encoding.UTF8.GetString(Msg).TrimEnd('\0');
+        }
+    }
+
+    public class UpdateClientScoreReqPacket
+    {
+        public int Score;
+        
+        public byte[] ToBytes()
+        {
+            List<byte> dataSource = new List<byte>();
+            dataSource.AddRange(BitConverter.GetBytes(Score));
+            return dataSource.ToArray();
+        }
+    }
+    
+
 }

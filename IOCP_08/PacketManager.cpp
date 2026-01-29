@@ -142,8 +142,10 @@ void PacketManager::ProcessPacket()
 		{
 			isIdle = false;
 			
+			// ProcessRecvPacket 는 동기방식으로 작동하므로, pData 를 다 사용한 다음 Release() 호출해서 메모리 해제	
 			ProcessRecvPacket(task.UserIndex, (UINT16)task.TaskID, task.DataSize, task.pData);
 
+			// 다 사용했으니까 pData 메모리 해제
 			task.Release();
 		}
 
@@ -154,6 +156,7 @@ void PacketManager::ProcessPacket()
 
 			ProcessRecvPacket(task.UserIndex, (UINT16)task.TaskID, task.DataSize, task.pData);
 
+			// 다 사용했으니까 pData 메모리 해제
 			task.Release();
 		}
 

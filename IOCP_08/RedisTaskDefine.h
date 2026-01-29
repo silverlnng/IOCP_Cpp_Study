@@ -15,6 +15,7 @@ enum class RedisTaskID : UINT16
 
 	REQUEST_LOGIN = 1001,
 	RESPONSE_LOGIN = 1002,
+	REQUEST_UPDATE_SCORE = 2001,
 };
 
 struct RedisTask
@@ -50,4 +51,9 @@ struct RedisLoginRes
 	UINT16 Result = (UINT16)ERROR_CODE::NONE;
 };
 
+struct RedisUpdateScoreReq
+{
+	char UserID[MAX_USER_ID_LEN + 1];
+	INT32 Score;
+};
 #pragma pack(pop) // 위에 설정된 패킹설정이 사라짐

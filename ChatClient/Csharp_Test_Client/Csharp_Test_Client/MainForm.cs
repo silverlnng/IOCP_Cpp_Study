@@ -355,14 +355,15 @@ public partial class MainForm : Form
 
         List<byte> dataSource = new List<byte>();
 
-        dataSource.AddRange
-            (BitConverter.GetBytes((UInt16)packetSize));
+        // 헤더 5바이트 채우기 (총크기 2바이트, 패킷ID 2바이트, 타입 1바이트)
 
-        dataSource.AddRange
-            (BitConverter.GetBytes((UInt16)packetID));
+        dataSource.AddRange(BitConverter.GetBytes((UInt16)packetSize));
 
-        dataSource.AddRange
-           (new byte[] { (byte)0 });
+        dataSource.AddRange(BitConverter.GetBytes((UInt16)packetID));
+
+        dataSource.AddRange(new byte[] { (byte)0 });
+
+        // 헤더 채우고 바디(내용물) 채우기
 
         if (bodyData != null)
         {
@@ -377,6 +378,9 @@ public partial class MainForm : Form
         var loginReqPacket = new LoginReqPacket();
 
         loginReqPacket.SetValue(textBoxUserID.Text, textBoxUserPW.Text);
+
+        // textBoxUserID , textBoxUserPW 를 직렬화 시켜서 (바이트 배열로 만들어서) 보냄
+
         PostSendPacket(PACKET_ID.LOGIN_REQ, loginReqPacket.ToBytes());
 
         DevLog.Write($"로그인 요청: {textBoxUserID.Text} , {textBoxUserPW.Text}");
@@ -673,4 +677,66 @@ public partial class MainForm : Form
         return dataSource.ToArray();
     }
 
-}
+    private void BtnUpdateScoreMulti_Click(object sender, EventArgs e)
+    {
+        // 1. 로그인된 클라이언트 확인
+        if (MultiClientList.Count == 0)
+        {
+            DevLog.Write("로그인된 클라이언트가 없습니다.", LOG_LEVEL.WARN);
+            return;
+        }
+
+        // 현재 리스트를 복사하거나 참조를 가져옴 (테스트 도중 접속/해제 금지)
+        int clientCount = MultiClientList.Count;
+
+        DevLog.Write($"{clientCount}명 점수 업데이트 요청 스레드 시작...", LOG_LEVEL.INFO);
+
+        // 2. 별도의 스레드(Task)에서 전송 로직 수행
+        Task.Run(() =>
+        {
+            Random rnd = new Random();
+            int sendCount = 0;
+
+            foreach (var client in MultiClientList)
+            {
+                // 연결된 클라이언트만 전송
+                if (client.IsConnected())
+                {
+                    // 랜덤 점수 생성 (100 ~ 10000)
+                    int randomScore = rnd.Next(100, 10000);
+
+                    // 패킷 생성 및 직렬화
+                    var scorePacket = new UpdateClientScoreReqPacket();
+                    scorePacket.Score = randomScore;
+
+                    // MakePacketBuffer는 MainForm의 메소드이므로 스레드 안전성 주의 필요.
+                    // 만약 MakePacketBuffer가 UI 컨트롤을 건드리지 않는다면 사용 가능하지만,
+                    // 안전하게 직접 바이트 배열을 만드는 것이 좋습니다.
+                    List<byte> dataSource = new List<byte>();
+                    byte[] bodyData = scorePacket.ToBytes();
+
+                    // 헤더 + 바디 조립 (PacketDefine.cs 참조)
+                    UInt16 packetSize = (UInt16)(bodyData.Length + PacketDef.PACKET_HEADER_SIZE);
+                    dataSource.AddRange(BitConverter.GetBytes(packetSize));
+                    dataSource.AddRange(BitConverter.GetBytes((UInt16)PACKET_ID.UPDATE_CLIENT_SCORE_REQ));
+                    dataSource.AddRange(new byte[] { (byte)0 }); // Type
+                    dataSource.AddRange(bodyData);
+
+                    // 전송 (ClientMultiTCP.Send는 내부적으로 BeginSend 사용 [3])
+                    client.Send(dataSource.ToArray());
+                    sendCount++;
+
+                    // [중요] 부하 조절 (Throttling)
+                    // 100명에게 보낼 때마다 10ms 정도 쉬어줍니다.
+                    // PC의 네트워크 버퍼가 가득 차서 전송 실패(WSAENOBUFS)가 나는 것을 방지합니다.
+                    if (sendCount % 100 == 0)
+                    {
+                        Thread.Sleep(10);
+                    }
+                }
+            }
+
+            // 3. 완료 로그 (DevLog는 ConcurrentQueue를 사용하므로 스레드 안전함 [4])
+            DevLog.Write($"[완료] 총 {sendCount}명의 점수 업데이트 요청을 전송했습니다.", LOG_LEVEL.INFO);
+        });
+    }
