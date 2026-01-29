@@ -27,6 +27,7 @@ void PacketManager::Init(const UINT32 maxClient_)
 
 	mRecvFuntionalDictionary[(int)PACKET_ID::ROOM_ENTER_REQUEST] = &PacketManager::ProcessEnterRoom;
 
+	mRecvFuntionalDictionary[(int)PACKET_ID::UPDATE_CLIENT_SCORE_REQUEST] = &PacketManager::ProcessUpdateScore;
 
 
 	// 패킷매니저에서 시작하면서 유저매니저를 생성하고 Init 실행시킴
@@ -384,12 +385,22 @@ void PacketManager::ProcessLoginDBResult(UINT32 clientIndex_, UINT16 packetSize_
 {
 	printf("[PacketManager::ProcessLoginDBResult] UserIndex : %d \n", clientIndex_);
 
-	auto pBody = (RedisLoginRes*)pPacket_;
+	auto pBody = (MySQLLoginRes*)pPacket_;
 
 	if(pBody->Result == (UINT16)ERROR_CODE::NONE)
 	{
-		// 로그인 완료로 변경하기 	
+		// [여기가 핵심] 로그인 성공했으므로 매핑 테이블에 등록!
+		// 이제 1. UserManager의 Dictionary에 ID가 등록되고
+		// 2. User 객체 상태가 LOGIN으로 변경됨
+		mUserManager->AddUser(pBody->UserID, clientIndex_);
+
+		printf("[Login Success] User: %s (ClientIdx: %d)\n", pBody->UserID, clientIndex_);
 	}
+	else
+	{
+		printf("[Login Failed] ClientIdx: %d, ErrorCode: %d\n", clientIndex_, pBody->Result);
+	}
+
 
 	LOGIN_RESPONSE_PACKET loginResPacket;
 	loginResPacket.PacketId = (UINT16)PACKET_ID::LOGIN_RESPONSE;
@@ -431,4 +442,70 @@ void PacketManager::ProcessLeaveRoom(UINT32 clientIndex_, UINT16 packetSize_, ch
 
 void PacketManager::ProcessRoomChatMessage(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
 {
+}
+
+void PacketManager::ProcessUpdateScore(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
+{
+	// 1. 요청한 유저 확인 (로그인 상태인지 검증)
+	auto pUser = mUserManager->GetUserByConnIdx(clientIndex_);
+	if (pUser == nullptr || pUser->GetDomainState() != User::DOMAIN_STATE::LOGIN)
+	{
+		// 로그인하지 않은 유저의 요청은 무시하거나 에러 로그 출력
+		return;
+	}
+
+	// 2. 패킷 파싱 (Packet.h에 정의된 구조체로 캐스팅)
+	// struct UPDATE_CLIENT_SCORE_REQUEST_PACKET : public PACKET_HEADER { INT32 Score; };
+	auto pScorePacket = reinterpret_cast<UPDATE_CLIENT_SCORE_REQUEST_PACKET*>(pPacket_);
+
+	INT32 newScore = pScorePacket->NewScore;
+	std::string userID = pUser->GetUserId();
+
+	// 로그 출력 (디버깅용)
+	printf("[Score Request] UserID: %s, Score: %d\n", userID.c_str(), newScore);
+
+	// =================================================================
+	// 3. MySQL Task 생성 및 요청 (DB에 점수 기록)
+	// =================================================================
+	{
+		MySQLUpdateScoreReq sqlReq;
+		// UserID 복사 (메모리 안전을 위해 초기화 후 복사)
+		ZeroMemory(sqlReq.UserID, sizeof(sqlReq.UserID));
+		CopyMemory(sqlReq.UserID, userID.c_str(), userID.length());
+		sqlReq.Score = newScore;
+
+		MySQLTask sqlTask;
+		sqlTask.UserIndex = clientIndex_;
+		sqlTask.TaskID = MySQLTaskID::REQUEST_UPDATE_SCORE; // 2001
+		sqlTask.DataSize = sizeof(MySQLUpdateScoreReq);
+
+		// [중요] Task 처리를 위한 별도 메모리 할당 (MySQLManager가 처리 후 해제함)
+		sqlTask.pData = new char[sqlTask.DataSize];
+		CopyMemory(sqlTask.pData, (char*)&sqlReq, sqlTask.DataSize);
+
+		// 큐에 넣기
+		mMySQLManager->PushTask(sqlTask);
+	}
+
+	// =================================================================
+	// 4. Redis Task 생성 및 요청 (실시간 랭킹 업데이트)
+	// =================================================================
+	{
+		RedisUpdateScoreReq redisReq;
+		ZeroMemory(redisReq.UserID, sizeof(redisReq.UserID));
+		CopyMemory(redisReq.UserID, userID.c_str(), userID.length());
+		redisReq.Score = newScore;
+
+		RedisTask redisTask;
+		redisTask.UserIndex = clientIndex_;
+		redisTask.TaskID = RedisTaskID::REQUEST_UPDATE_SCORE; // 2001
+		redisTask.DataSize = sizeof(RedisUpdateScoreReq);
+
+		// [중요] Task 처리를 위한 별도 메모리 할당 (RedisManager가 처리 후 해제함)
+		redisTask.pData = new char[redisTask.DataSize];
+		CopyMemory(redisTask.pData, (char*)&redisReq, redisTask.DataSize);
+
+		// 큐에 넣기
+		mRedisManager->PushTask(redisTask);
+	}
 }

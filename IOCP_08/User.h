@@ -61,6 +61,11 @@ public:
 		return mUserID;
 	}
 
+	DOMAIN_STATE GetDomainState() const
+	{
+		return mCurDomainState;
+	}
+
 	void SetPacketData(const UINT32 dataSize_,char* pData_)
 	{
 		// TCP 의 스트림 특성을 처리

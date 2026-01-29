@@ -50,6 +50,7 @@ struct MySQLLoginReq
 struct MySQLLoginRes
 {
 	UINT16 Result = (UINT16)ERROR_CODE::NONE;
+	char UserID[MAX_USER_ID_LEN + 1]; // [추가] 성공한 유저 ID를 되돌려주기 위해
 };
 
 struct MySQLUpdateScoreReq

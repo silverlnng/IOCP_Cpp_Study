@@ -205,6 +205,9 @@ public:
                         bodyData.Result = (UINT16)ERROR_CODE::MYSQL_SERVER_ERROR; // 서버 에러 처리
                     }
 
+                    // [추가] 요청받은 UserID를 결과 데이터에도 복사 (PacketManager가 알 수 있게)
+                    CopyMemory(bodyData.UserID, pRequest->UserID, MAX_USER_ID_LEN + 1);
+
                     MySQLTask resTask;
                     resTask.UserIndex = task.UserIndex;
                     resTask.TaskID = MySQLTaskID::RESPONSE_LOGIN;
@@ -228,11 +231,14 @@ public:
 
                         // "UserAccount" 테이블이 있다고 가정 (id, score 컬럼)
                         // 이미 있으면 업데이트, 없으면 삽입 (ON DUPLICATE KEY UPDATE)
-                        std::string query = "INSERT INTO UserAccount (id, score) VALUES ('";
-                        query += std::string(pRequest->UserID) + "', " + std::to_string(pRequest->Score) + ")";
-                        query += " ON DUPLICATE KEY UPDATE score = " + std::to_string(pRequest->Score);
+                        std::string query = "UPDATE UserAccount SET score = " + std::to_string(pRequest->Score);
+                        query += " WHERE id = '" + std::string(pRequest->UserID) + "'";
 
                         stmt->execute(query); // [9]
+
+                        // [추가] 변경 사항을 DB에 영구 반영
+                        con->commit(); 
+
                         delete stmt;
 
                         printf("[MySQL] 점수 저장 완료: %s -> %d\n", pRequest->UserID, pRequest->Score);

@@ -63,6 +63,7 @@ private:
 
 	void ProcessRoomChatMessage(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);
 
+	void ProcessUpdateScore(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_);
 
 	// 멤버 함수 포인터를 "PROCESS_RECV_PACKET_FUNCTION" 이라는 별칭으로  정의
 	typedef void(PacketManager::* PROCESS_RECV_PACKET_FUNCTION)(UINT32, UINT16,char*);

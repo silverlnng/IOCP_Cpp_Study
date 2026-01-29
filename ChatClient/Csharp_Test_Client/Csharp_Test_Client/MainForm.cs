@@ -740,3 +740,4 @@ public partial class MainForm : Form
             DevLog.Write($"[완료] 총 {sendCount}명의 점수 업데이트 요청을 전송했습니다.", LOG_LEVEL.INFO);
         });
     }
+}

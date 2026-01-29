@@ -43,12 +43,18 @@ public:
 	ERROR_CODE AddUser(char* userID_,int clientIndex_)
 	{
 		// TODO : 유저의 중복 조사 필요
+		 // 중복 체크
+		if (mUserIDDictionary.find(userID_) != mUserIDDictionary.end())
+		{
+			return ERROR_CODE::LOGIN_USER_ALREADY;
+		}
 
 		auto user_idx = clientIndex_;
 
 		mUserObjPool[user_idx]->SetLogin(userID_);
 
-		mUserIDDictionary.insert(std::pair<char* , int>(userID_,clientIndex_));
+		// [중요] std::string으로 변환되어 저장됨 (깊은 복사)
+		mUserIDDictionary.insert(std::make_pair(userID_, clientIndex_));
 
 		return ERROR_CODE::NONE;
 	}
