@@ -308,7 +308,7 @@ void PacketManager::ProcessLogin(UINT32 clientIndex_, UINT16 packetSize_, char* 
 	// 로그인 응답 패킷 준비
 	LOGIN_RESPONSE_PACKET loginResPacket;
 	loginResPacket.PacketId = (UINT16)PACKET_ID::LOGIN_RESPONSE;
-	loginResPacket.PacketLengeh = sizeof(LOGIN_RESPONSE_PACKET);
+	loginResPacket.PacketLength = sizeof(LOGIN_RESPONSE_PACKET);
 
 
 
@@ -404,7 +404,7 @@ void PacketManager::ProcessLoginDBResult(UINT32 clientIndex_, UINT16 packetSize_
 
 	LOGIN_RESPONSE_PACKET loginResPacket;
 	loginResPacket.PacketId = (UINT16)PACKET_ID::LOGIN_RESPONSE;
-	loginResPacket.PacketLengeh = sizeof(LOGIN_RESPONSE_PACKET);
+	loginResPacket.PacketLength = sizeof(LOGIN_RESPONSE_PACKET);
 	loginResPacket.Result = pBody->Result;
 
 	SendPacketFunc(clientIndex_, sizeof(LOGIN_RESPONSE_PACKET), (char*)&loginResPacket);
@@ -429,7 +429,7 @@ void PacketManager::ProcessEnterRoom(UINT32 clientIndex_, UINT16 packetSize_, ch
 
 	roomEnterResPacket.PacketId = (UINT16)PACKET_ID::ROOM_ENTER_RESPONSE;
 
-	roomEnterResPacket.PacketLengeh = sizeof(ROOM_ENTER_RESPONSE_PACKET);
+	roomEnterResPacket.PacketLength = sizeof(ROOM_ENTER_RESPONSE_PACKET);
 
 	//roomEnterResPacket.Result = mRoomManager
 

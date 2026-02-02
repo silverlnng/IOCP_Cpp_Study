@@ -57,7 +57,7 @@ enum class PACKET_ID : UINT16
 struct PACKET_HEADER
 {
 
-	UINT16 PacketLengeh;
+	UINT16 PacketLength;
 	UINT16 PacketId;
 	UINT8 Type; // 압축 여부 , 암호화 여부 등 속성을 알아내는 값
 
