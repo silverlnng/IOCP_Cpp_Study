@@ -7,6 +7,7 @@
 #include <thread>
 #include <mutex>
 #include <functional>
+#include <atomic>
 
 class UserManager;
 class RedisManager;
@@ -85,11 +86,30 @@ private:
 
 	std::mutex mLock;
 
-	std::deque<UINT32> mInComingPacketUserIndex;
 
 	// 연결 성립, 연결 종료때 만 사용.
 	// 데이터 버퍼에 쌓을 필요없음
 	// 패킷을 받은 즉시 처리하면 된다
 	std::deque<PacketInfo> mSystemPacketQueue;
+
+
+	//std::deque<UINT32> mInComingPacketUserIndex;
+
+	// 1. 버퍼 크기 (2의 승수 권장: 65536 = 64K)
+	static const UINT32 INCOMING_BUFFER_SIZE = 65536;
+	static const UINT32 INCOMING_BUFFER_MASK = INCOMING_BUFFER_SIZE - 1;
+
+	// 2. 고정 배열 (힙 할당 제거, 캐시 적중률 향상)
+	UINT32 mInComingPacketUserIndex[INCOMING_BUFFER_SIZE];
+
+	// 3. 인덱스 관리 (False Sharing 방지 패딩 적용)
+	// Head: Consumer(LogicThread)가 읽는 위치
+	alignas(64) std::atomic<size_t> mInComingHead = { 0 };
+
+	// Tail: Producer(IO Threads)가 쓰는 위치
+	alignas(64) std::atomic<size_t> mInComingTail = { 0 };
+
+	// 4. MPSC 동기화용 SpinLock (Mutex보다 훨씬 가벼움)
+	std::atomic_flag mInComingSpinLock = ATOMIC_FLAG_INIT;
 };
 

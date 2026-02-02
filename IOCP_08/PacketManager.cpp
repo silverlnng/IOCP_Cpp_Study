@@ -194,39 +194,80 @@ void PacketManager::ProcessPacket()
 
 void PacketManager::EnqueuePacketData(const UINT32 clientIndex_)
 {
-	std::lock_guard<std::mutex> guard(mLock);
-	mInComingPacketUserIndex.push_back(clientIndex_);
+	// 워커스레드에서 (4개) 작동
+	
+	// [SpinLock] Mutex 대신 원자적 플래그 사용
+	// IO 스레드끼리의 경합은 매우 짧으므로 SpinLock이 효율적입니다.
+	while (mInComingSpinLock.test_and_set(std::memory_order_acquire)) {
+		// Busy-Wait (CPU 양보: std::this_thread::yield() 가능)
+		std::this_thread::yield(); // "다른 친구들 먼저 일해!" (CPU 양보)
+	}
+
+	// --- Critical Section Start ---
+
+	size_t currentTail = mInComingTail.load(std::memory_order_relaxed);
+	size_t nextTail = (currentTail + 1) & INCOMING_BUFFER_MASK;
+	// & 연산으로 0~(버퍼크기-1) 사이로 순환
+
+	// Head를 확인하여 꽉 찼는지 검사
+	size_t currentHead = mInComingHead.load(std::memory_order_acquire);
+
+	if (nextTail != currentHead)
+	{
+		// 공간이 있으면 데이터 쓰기
+		mInComingPacketUserIndex[currentTail] = clientIndex_;
+
+		// Tail 업데이트 (이 시점부터 Consumer가 읽을 수 있음)
+		mInComingTail.store(nextTail, std::memory_order_release);
+	}
+	else
+	{
+		// 버퍼 오버플로우 처리 (로그 출력 등)
+		printf("[PacketManager] Incoming Queue Full! Dropped Index: %d\n", clientIndex_);
+	}
+
+	// --- Critical Section End ---
+	mInComingSpinLock.clear(std::memory_order_release);
 }
 
 PacketInfo PacketManager::DequePacketData()
 {
+	// ProcessThread 에서 만 작동
 	// 
+	// Consumer는 메인 스레드 하나뿐이므로 Lock이 필요 없습니다.
 
-	UINT32 userIndex = 0;
+	size_t currentHead = mInComingHead.load(std::memory_order_relaxed);
+	size_t currentTail = mInComingTail.load(std::memory_order_acquire);
 
-	// 중괄호로 std::lock_guard 의 scope를 필요한 부분만 으로 제한 해주는 것 
-	// 임계영역 범위를 최소화 ! => 성능 높이는 방법
+	// 큐가 비었는지 확인
+	if (currentHead == currentTail)
 	{
-		std::lock_guard<std::mutex> guard(mLock);
-
-		if (mInComingPacketUserIndex.empty())
-		{
-			// 비어 있으면 
-			return PacketInfo();
-		}
-
-		userIndex = mInComingPacketUserIndex.front();
-		mInComingPacketUserIndex.pop_front();
+		return PacketInfo();
 	}
 
+	// 1. 인덱스(ClientIndex) 꺼내기
+	UINT32 userIndex = mInComingPacketUserIndex[currentHead];
+
+	// 2. Head 증가 (처리 완료)
+	size_t nextHead = (currentHead + 1) & INCOMING_BUFFER_MASK;
+	// & 연산으로 0~(버퍼크기-1) 사이로 순환
+	mInComingHead.store(nextHead, std::memory_order_release);
+
+	// 3. 실제 패킷 데이터 가져오기 (User 객체 버퍼에서)
+	// 주의: 유저가 그 사이 접속을 끊었을 수도 있으므로 nullptr 체크 권장
 	auto pUser = mUserManager->GetUserByConnIdx(userIndex);
+	if (pUser == nullptr)
+	{
+		return PacketInfo();
+	}
 
+	// User의 링 버퍼에서 패킷을 pop 해옵니다.
 	auto packetData = pUser->GetPacket();
-
 	packetData.ClientIndex = userIndex;
 
-
 	return packetData;
+
+
 }
 
 //  워커스레드가 작동
