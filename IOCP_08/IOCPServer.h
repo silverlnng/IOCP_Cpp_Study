@@ -72,7 +72,7 @@ public:
 
 		// 접속요청을 받기위해서 리슨소켓을 Listen State 으로 전환. 
 		// 리슨소켓의 백로그(접속대기큐) 를 5개로 설정
-		nResult = listen(mListenSocket, 5);
+		nResult = listen(mListenSocket, SOMAXCONN);
 		if (nResult != 0)
 		{
 			printf("[에러] listen() 함수 실패 :%d\n", WSAGetLastError());
@@ -341,7 +341,7 @@ private:
 				client->PostAccept(mListenSocket, curTimeSec);
 			}
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(32));
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 			// 1초/32 만큼 쉬다가 다시 확인
 			// => 1초에 32 번 확인하게 됨
