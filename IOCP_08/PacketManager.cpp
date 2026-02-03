@@ -200,7 +200,8 @@ void PacketManager::EnqueuePacketData(const UINT32 clientIndex_)
 	// IO 스레드끼리의 경합은 매우 짧으므로 SpinLock이 효율적입니다.
 	while (mInComingSpinLock.test_and_set(std::memory_order_acquire)) {
 		// Busy-Wait (CPU 양보: std::this_thread::yield() 가능)
-		std::this_thread::yield(); // "다른 친구들 먼저 일해!" (CPU 양보)
+		// std::this_thread::yield(); // "다른 친구들 먼저 일해!" (CPU 양보)
+		_mm_pause();
 	}
 
 	// --- Critical Section Start ---

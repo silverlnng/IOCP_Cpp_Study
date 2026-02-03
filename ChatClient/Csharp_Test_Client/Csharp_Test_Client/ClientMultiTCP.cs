@@ -66,7 +66,7 @@ namespace Csharp_Test_Client
 
                 if (client.Connected)
                 {
-                    DevLog.Write("서버 접속 성공 (비동기)", LOG_LEVEL.INFO);
+                   // DevLog.Write("서버 접속 성공 (비동기)", LOG_LEVEL.INFO);
                     // 접속 성공 즉시 비동기 수신 시작
                     StartReceive();
                 }
