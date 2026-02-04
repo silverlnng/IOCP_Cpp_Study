@@ -45,20 +45,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 286,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "CRedisConn.h",
-              "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ThirdParty\\CRedisConn.h",
-              "RelativeDocumentMoniker": "..\\..\\ThirdParty\\CRedisConn.h",
-              "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ThirdParty\\CRedisConn.h",
-              "RelativeToolTip": "..\\..\\ThirdParty\\CRedisConn.h",
-              "ViewState": "AgIAAMoDAAAAAAAAAAAYwMoDAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-28T23:49:09.136Z"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 6,
@@ -144,6 +132,18 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-28T00:26:06.591Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CRedisConn.h",
+              "DocumentMoniker": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ThirdParty\\CRedisConn.h",
+              "RelativeDocumentMoniker": "..\\..\\ThirdParty\\CRedisConn.h",
+              "ToolTip": "D:\\ServerStudy\\YJStudy\\IOCP\\IOCPStudy\\ThirdParty\\CRedisConn.h",
+              "RelativeToolTip": "..\\..\\ThirdParty\\CRedisConn.h",
+              "ViewState": "AgIAAMoDAAAAAAAAAAAYwMoDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-28T23:49:09.136Z"
             },
             {
               "$type": "Document",

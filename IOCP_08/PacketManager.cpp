@@ -101,21 +101,21 @@ void PacketManager::ReceivePacketData(const UINT32 clientIndex_, const UINT size
 // 패킷이 들어오는걸 검사하고 , 처리
 void PacketManager::ProcessPacket()
 {
-	// 시간 측정을 위한 변수 선언
-	auto startTime = std::chrono::high_resolution_clock::now();
-	int packetCount = 0;
-	int totalPacketCount = 0;
-	int totalElapsedSec = 0;
+	//// 시간 측정을 위한 변수 선언
+	//auto startTime = std::chrono::high_resolution_clock::now();
+	//int packetCount = 0;
+	//int totalPacketCount = 0;
+	//int totalElapsedSec = 0;
 
-	// [추가] CSV 파일 열기 (덮어쓰기 모드)
-	// Lock-Free 테스트 시에는 파일명을 "tps_log_lockfree.csv"로 변경하세요.
-	std::ofstream tpsFile("tps_log_lock_based.csv");
+	//// [추가] CSV 파일 열기 (덮어쓰기 모드)
+	//// Lock-Free 테스트 시에는 파일명을 "tps_log_lockfree.csv"로 변경하세요.
+	//std::ofstream tpsFile("tps_log_lock_based.csv");
 
-	// [추가] CSV 헤더 작성 (엑셀에서 X축, Y축 인식용)
-	if (tpsFile.is_open())
-	{
-		tpsFile << "Time(Sec),TPS,TotalPacketCount" << std::endl;
-	}
+	//// [추가] CSV 헤더 작성 (엑셀에서 X축, Y축 인식용)
+	//if (tpsFile.is_open())
+	//{
+	//	tpsFile << "Time(Sec),TPS,TotalPacketCount" << std::endl;
+	//}
 
 	while (mIsRunProcessThread)
 	{
@@ -127,7 +127,7 @@ void PacketManager::ProcessPacket()
 			isIdle = false;
 
 			ProcessRecvPacket(packetData.ClientIndex, packetData.PacketId, packetData.DataSize, packetData.pDataPtr);
-			packetCount++; // 처리 횟수 증가
+			//packetCount++; // 처리 횟수 증가
 		}
 
 		if (auto packetData = DequeSystemPacketData(); packetData.PacketId!=0)
@@ -135,7 +135,7 @@ void PacketManager::ProcessPacket()
 			isIdle = false;
 
 			ProcessRecvPacket(packetData.ClientIndex, packetData.PacketId, packetData.DataSize, packetData.pDataPtr);
-			packetCount++; // 처리 횟수 증가
+			//packetCount++; // 처리 횟수 증가
 		}
 
 		// Redis 의 응답 Task 확인하고 가져오기 추가
@@ -162,25 +162,25 @@ void PacketManager::ProcessPacket()
 		}
 
 		// TPS 출력 로직
-		auto endTime = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> elapsed = endTime - startTime;
-		if (elapsed.count() >= 1.0) // 1초가 지났다면
-		{
-			totalElapsedSec++; // 경과 시간 증가
-			totalPacketCount += packetCount;
-			// 콘솔 출력 (실시간 확인용)
-			printf("[TPS Measure] Time: %d sec, TPS: %d ,total TPS: %d \n", totalElapsedSec, packetCount, totalPacketCount);
+		//auto endTime = std::chrono::high_resolution_clock::now();
+		//std::chrono::duration<double> elapsed = endTime - startTime;
+		//if (elapsed.count() >= 1.0) // 1초가 지났다면
+		//{
+		//	totalElapsedSec++; // 경과 시간 증가
+		//	totalPacketCount += packetCount;
+		//	// 콘솔 출력 (실시간 확인용)
+		//	printf("[TPS Measure] Time: %d sec, TPS: %d ,total TPS: %d \n", totalElapsedSec, packetCount, totalPacketCount);
 
-			// 파일 출력 (포트폴리오 그래프용)
-			if (tpsFile.is_open())
-			{
-				// 형식: 시간,처리량
-				tpsFile << totalElapsedSec << "," << packetCount<<","<< totalPacketCount<< std::endl;
-			}
+		//	// 파일 출력 (포트폴리오 그래프용)
+		//	if (tpsFile.is_open())
+		//	{
+		//		// 형식: 시간,처리량
+		//		tpsFile << totalElapsedSec << "," << packetCount<<","<< totalPacketCount<< std::endl;
+		//	}
 
-			packetCount = 0; // 카운터 초기화
-			startTime = std::chrono::high_resolution_clock::now(); // 시간 초기화
-		}
+		//	packetCount = 0; // 카운터 초기화
+		//	startTime = std::chrono::high_resolution_clock::now(); // 시간 초기화
+		//}
 
 
 		if (isIdle)
