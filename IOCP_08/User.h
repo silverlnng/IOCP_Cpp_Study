@@ -50,11 +50,20 @@ public:
 		mCurDomainState = DOMAIN_STATE::ROOM;
 	}
 
+	void SetDomainState(DOMAIN_STATE state_)
+	{
+		mCurDomainState = state_;
+	}
+
 	INT32 GetCurrentRoom()
 	{
 		return mRoomIndex;
 	}
 
+	INT32 GetNetConnIdx()
+	{
+		return mIndex;
+	}
 
 	std::string GetUserId() const
 	{
@@ -148,8 +157,7 @@ private:
 	INT32 mRoomIndex = -1;
 
 	std::string mUserID;
-
-
+	
 	DOMAIN_STATE mCurDomainState = DOMAIN_STATE::NONE;
 
 
