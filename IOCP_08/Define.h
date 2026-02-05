@@ -4,7 +4,7 @@
 #include <ws2tcpip.h>
 #include <mswsock.h>
 
-const UINT32 MAX_SOCK_RECVBUF = 256;
+const UINT32 MAX_SOCK_RECVBUF = 4096;
 const UINT32 MAX_SOCK_SENDBUF = 4096;
 const UINT64 RE_USE_SESSION_WAIT_TIMESEC = 3;
 

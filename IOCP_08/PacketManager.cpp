@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "UserManager.h"
+#include "RoomManager.h"
 #include "PacketManager.h"
 #include "RedisManager.h"
 #include "MySQLManager.h"
@@ -42,7 +43,13 @@ void PacketManager::CreateComponent(const UINT32 maxClient_)
 	mUserManager = new UserManager;
 	mUserManager->Init(maxClient_);
 
+	UINT32 startRoomNumber = 0;
+	UINT32 maxRoomCount = 10;
+	UINT32 maxRoomUserCount = 4;
 
+	mRoomManager = new RoomManager;
+	mRoomManager->SendPacketFunc = SendPacketFunc;
+	mRoomManager->Init(startRoomNumber, maxRoomCount, maxRoomUserCount);
 }
 
 
@@ -84,7 +91,16 @@ void PacketManager::ClearConnectionInfo(UINT32 clientIndex_)
 {
 	auto pReqUser = mUserManager->GetUserByConnIdx(clientIndex_);
 
-	//if (pReqUser->)
+	if (pReqUser->GetDomainState() == User::DOMAIN_STATE::ROOM)
+	{
+		auto roomIndex = pReqUser->GetCurrentRoom();
+		mRoomManager->LeaveUser(roomIndex, pReqUser);
+	}
+
+	if (pReqUser->GetDomainState() == User::DOMAIN_STATE::NONE)
+	{
+		mUserManager->DeleteUserInfo(pReqUser);
+	}
 
 }
 
@@ -316,7 +332,7 @@ void PacketManager::ProcessUserConnect(UINT32 clientIndex_, UINT16 packetSize_, 
 void PacketManager::ProcessUserDisConnect(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)
 {
 	printf("[ProcessUserDisConnect] clientIndex : %d\n", clientIndex_);
-
+	ClearConnectionInfo(clientIndex_);
 }
 
 void PacketManager::ProcessDevEcho(UINT32 clientIndex_, UINT16 packetSize_, char* pPacket_)

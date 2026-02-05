@@ -49,8 +49,37 @@ public:
 		--mCurUserCount;
 	}
 
+	void NotifyChat(INT32 clientIndex_,const char* userID_,const char* msg_)
+	{
+		ROOM_CHAT_NOTIFY_PACKET roomChatNotifyPacket;
+		
+		roomChatNotifyPacket.PacketId = (UINT16)PACKET_ID::ROOM_CHAT_NOTIFY;
+		roomChatNotifyPacket.PacketLength = sizeof(roomChatNotifyPacket);
+
+		CopyMemory(roomChatNotifyPacket.Msg, msg_, sizeof(roomChatNotifyPacket.Msg));
+		CopyMemory(roomChatNotifyPacket.UserID, userID_, sizeof(roomChatNotifyPacket.UserID));
+		SendToAllUsers(sizeof(roomChatNotifyPacket), (char*)&roomChatNotifyPacket, clientIndex_, false);
+
+	}
+
+	std::function<void(UINT32, UINT16, char*)> SendPacketFunc;
 
 private:
+
+	void SendToAllUsers(const UINT16 dataSize_,char* data_,const INT32 passUserIndex,bool exceptMe)
+	{
+		for (auto& pUser : mUserList)
+		{
+			if (pUser == nullptr) { continue; }
+
+			if(exceptMe && pUser->GetNetConnIdx() == passUserIndex)
+			{
+				continue;
+			}
+
+			SendPacketFunc((UINT32)pUser->GetNetConnIdx(), (UINT32)dataSize_, data_);
+		}
+	}
 
 	INT32 mRoomNum = -1;
 
