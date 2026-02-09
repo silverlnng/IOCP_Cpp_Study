@@ -79,6 +79,8 @@ void PacketManager::End()
 {
 	mRedisManager->End();
 
+	mMySQLManager->End();
+
 	mIsRunProcessThread = false;
 
 	if (mProcessThread.joinable())

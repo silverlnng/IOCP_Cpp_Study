@@ -117,48 +117,6 @@ private:
 			} // [블록 끝] 여기서 락 해제. 데이터 처리는 락 없이 진행
 
 			// 작업 종류에 따라서 처리하기
-
-			// 로그인 요청 처리
-			if (task.TaskID == RedisTaskID::REQUEST_LOGIN)
-			{
-				auto pRequest = (RedisLoginReq*)task.pData;
-
-				RedisLoginRes bodyData;
-
-				bodyData.Result = (UINT16)ERROR_CODE::LOGIN_USER_INVALID_PW;
-
-				std::string value;
-				if (mConn.get(pRequest->UserID, value))
-				{
-					// Redis 서버 조회를 통해서 , 서버에 해당 유저의 ID 가 있으면, 저장되어있던 비밀번호를 value 변수 안에 채워넣는 것 
-
-					if (value.compare(pRequest->UserPW) == 0)
-					{
-						// DB 값 과 입력값 비교 . 
-						// 동일할때만 ERROR_CODE::NONE으로 변경
-						bodyData.Result = (UINT16)ERROR_CODE::NONE;
-					}
-
-				}
-
-				RedisTask resTask;
-
-				// 이번에는 작업종류를 RESPONSE_LOGIN 으로 변경하고
-				// mResponseTask 에 넣음 = > 그럼 PacketManager 쪽 의 thread 에서 검사하고 가져가서 처리함
-
-				resTask.UserIndex = task.UserIndex;
-				resTask.TaskID = RedisTaskID::RESPONSE_LOGIN;
-				resTask.DataSize = sizeof(RedisLoginRes);
-				resTask.pData = new char[resTask.DataSize];
-
-				CopyMemory(resTask.pData, (char*)&bodyData, resTask.DataSize);
-
-				PushResponse(resTask);
-
-				task.Release();
-
-			}
-
 			if (task.TaskID == RedisTaskID::REQUEST_UPDATE_SCORE)
 			{
 				auto pRequest = (RedisUpdateScoreReq*)task.pData;
