@@ -185,7 +185,7 @@ public partial class MainForm : Form
 
                     // 
                     packet.Type = (SByte)data.Array[(data.Offset + 4)];
-
+                    packet.BodyData = new byte[packet.DataSize];
                     // 버퍼에 헤더를 건너띄고( 5번 인덱스 부터 시작점으로 복사) , 내용물 바디만 복사함
                     Buffer.BlockCopy(data.Array, (data.Offset + PacketHeaderSize), packet.BodyData, 0, (data.Count - PacketHeaderSize));
 
@@ -199,11 +199,13 @@ public partial class MainForm : Form
                 }
 
                 // DevLog 에 로그 남기기
-
+                DevLog.Write($"받은 데이터 크기: {recvData.Item1}", LOG_LEVEL.INFO);
             }
             else // recvData == null 이면
             {
-
+                Network.Close();
+                SetDisconnected();
+                DevLog.Write("서버와 접속 종료 !!!", LOG_LEVEL.INFO);
                 // 서버와 접속 종료
             }
 
