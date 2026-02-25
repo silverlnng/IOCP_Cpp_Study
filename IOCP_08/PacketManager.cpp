@@ -62,7 +62,7 @@ bool PacketManager::Run()
 		//return false;
 	}
 	// Redis 서버와의 연결하기
-	if (mRedisManager->Run("127.0.0.1",6379,1)==false)
+	if (mRedisManager->Run(1)==false)
 	{
 		//return false;	
 	}

@@ -11,11 +11,11 @@
 class RedisManager
 {
 public:
-	bool Run(std::string ip_,UINT16 port_,const	UINT32 threadCount_)
+	bool Run(const	UINT32 threadCount_)
 	{
-		if (Connect(ip_, port_) == false)
+		if (ConnectWithSentinel() == false)
 		{
-			printf("Redis 접속실패\n");
+			printf("[Redis] 초기 마스터 접속 실패 (Sentinel 응답 없음)\n");
 			return false;
 		}
 
@@ -126,7 +126,25 @@ private:
 
 
 				// CRedisConn 래퍼에 Sorted Set(정렬된 집합) 을 에 추가하는 함수 zadd를 구현
-				mConn.zadd("GameRanking", pRequest->Score, pRequest->UserID);
+				bool success = mConn.zadd("GameRanking", pRequest->Score, pRequest->UserID);
+
+				// [전략적 수정] 명령 실행이 실패하면 재접속 로직을 가동
+				if (!success)
+				{
+					std::cout << "[Redis] 명령 실패! 마스터 장애 의심. 재접속 시도..." << std::endl;
+
+					// 센티널을 통해 마스터 재탐색 (성공할 때까지 혹은 일정 횟수 반복)
+					int retry = 0;
+					while (retry < 5) {
+						if (ConnectWithSentinel()) break;
+						std::this_thread::sleep_for(std::chrono::seconds(1)); // 센티널 투표 시간 대기
+						retry++;
+					}
+
+					// 재접속 후 다시 시도
+					mConn.zadd("GameRanking", pRequest->Score, pRequest->UserID);
+				}
+
 
 				// 예시 (가상 코드):
 				std::cout << "[Redis] 랭킹 업데이트 요청 (ZADD GameRanking "
@@ -165,9 +183,51 @@ private:
 		mResponseTask.push_back(task_);	
 	}
 
+	// [핵심] 센티널들에게 돌아가며 물어봐서 현재 마스터 주소를 가져옵니다.
+	bool ConnectWithSentinel()
+	{
+		for (const auto& s : mSentinels) {
+			// CRedisConn의 도구를 사용하여 주소를 알아옴
+			auto [masterIp, masterPort] = mConn.GetMasterAddrFromSentinel(s.ip, s.port, "mymaster");
+
+			if (!masterIp.empty()) {
+				// 2. 센티널이 대답해준 주소를 정확히 출력
+				std::cout << "[Manager] ★ 센티널 응답 수신 ★ -> Master IP: [" << masterIp << "], Port: [" << masterPort << "]" << std::endl;
+
+				// 3. 실제 마스터와 연결 시도 로그
+				std::cout << "[Manager] 해당 마스터로 접속 시도 중..." << std::endl;
+				if (mConn.connect(masterIp, masterPort)) {
+					std::cout << "[Manager] 마스터 접속 성공!! (" << masterIp << ":" << masterPort << ")" << std::endl;
+					return true;
+				}
+				else {
+					// 연결 실패 시 원인 파악을 위해 에러 로그 출력 (CRedisConn에 getErrorStr이 있다고 가정)
+					std::cout << "[Manager] ※ 마스터 접속 실패 (" << masterIp << ":" << masterPort << ")" << std::endl;
+				}
+			}
+			else {
+				std::cout << "[Manager] 센티널(" << s.ip << ")이 마스터 정보를 알고 있지 않거나 응답이 없습니다." << std::endl;
+			}
+		}
+		std::cout << "[Manager] 모든 센티널 시도 종료. 연결 가능한 마스터가 없습니다." << std::endl;
+		return false;
+	}
 
 	// RedisCpp::CRedisConn 래퍼 객체
 	RedisCpp::CRedisConn mConn;
+
+	// 센티널 정보를 담을 간단한 구조체
+	struct SentinelAddr {
+		std::string ip;
+		uint16_t port;
+	};
+
+	std::vector<SentinelAddr> mSentinels= {
+	{"127.0.0.1", 26379}, // sentinel-1
+	{"127.0.0.1", 26380}, // sentinel-2
+	{"127.0.0.1", 26381}  // sentinel-3
+	}; // 센티널 목록
+	
 
 	bool mIsTaskRun = false;
 

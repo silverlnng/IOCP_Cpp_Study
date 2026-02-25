@@ -909,6 +909,50 @@ public:
 		return ret;
 	}
 
+	static std::pair<std::string, int> GetMasterAddrFromSentinel(const std::string& sentinelIp, int sentinelPort, const std::string& masterName) {
+
+		// 1. 센티널에 잠시 접속
+		redisContext* ctx = redisConnect(sentinelIp.c_str(), sentinelPort);
+
+		if (ctx == nullptr || ctx->err) {
+			// 접속 자체가 안 된 경우 (포트가 닫혔거나 IP가 틀림)
+			std::cout << "[Sentinel Error] 접속 실패: " << (ctx ? ctx->errstr : "Context Null") << std::endl;
+			if (ctx) redisFree(ctx);
+			return { "", 0 };
+		}
+
+		// [LOG] 2. 접속 성공 확인
+		std::cout << "[Sentinel] 접속 성공! 정보를 물어봅니다... (MasterName: " << masterName << ")" << std::endl;
+
+		// 2. 명령어 실행
+		redisReply* reply = (redisReply*)redisCommand(ctx, "SENTINEL get-master-addr-by-name %s", masterName.c_str());
+
+
+		if (reply == nullptr) {
+			std::cout << "[Sentinel Error] 명령어 응답 없음 (NULL)" << std::endl;
+			redisFree(ctx);
+			return { "", 0 };
+		}
+
+		// [LOG] 3. 응답 타입 확인
+		std::cout << "[Sentinel] 응답 타입 수신: " << reply->type << " (NIL은 4번, ARRAY는 2번)" << std::endl;
+
+		std::pair<std::string, int> result = { "", 0 };
+
+		if (reply->type == 2 && reply->elements >= 2) { // 2 == REDIS_REPLY_ARRAY
+			result.first = reply->element[0]->str;
+			result.second = std::stoi(reply->element[1]->str);
+			std::cout << "[Sentinel] 마스터 발견! " << result.first << ":" << result.second << std::endl;
+		}
+		else if (reply->type == 4) { // 4 == REDIS_REPLY_NIL
+			std::cout << "[Sentinel Error] 센티널이 '" << masterName << "'을(를) 모릅니다. sentinel.conf 설정을 확인하세요." << std::endl;
+		}
+
+		freeReplyObject(reply);
+		redisFree(ctx); // 용무가 끝났으니 센티널 접속 해제
+		return result;
+	}
+
 protected:
 	/**
 	 *@brief  从 reply->type 为REDIS_REPLY_ARRY 类型的元素获取数据填充到　valueList 列表.
